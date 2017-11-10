@@ -36,7 +36,12 @@ class CompaniesController extends Controller
      */
     public function index()
     {
-    	$companies = Company::where("user_id", Auth::user()->id)->get();
+    	if(Auth::user()->role_id == 1) {
+		    $companies = Company::all();
+	    }
+    	else {
+    		$companies = Company::where("user_id", Auth::user()->id)->get();
+	    }
 
         return view("companies.index", array("companies" => $companies));
     }
