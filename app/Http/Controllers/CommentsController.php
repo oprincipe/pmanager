@@ -66,11 +66,13 @@ class CommentsController extends Controller
 		    $commentable = $comment->commentable;
 		    $owner_mail = $commentable->getContactMail();
 
+		    $mail_sent = "";
 		    if(!empty($owner_mail)) {
 			    Mail::to($owner_mail)->send(new CommentStored($comment));
+			    $mail_sent = " - mail sent to company's owner";
 		    }
 
-		    return back()->with("success", "Comment added successfully");
+		    return back()->with("success", "Comment added successfully".$mail_sent);
 	    }
 
         return back()->withInput()->with("error", "Errors while creating comment");
