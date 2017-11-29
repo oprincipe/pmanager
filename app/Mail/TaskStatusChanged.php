@@ -40,6 +40,7 @@ class TaskStatusChanged extends Mailable
 	 */
 	public function build()
 	{
+
 		$view_url = route('tasks.show', ['task_id' => $this->task->id]);
 
 		$title = $this->new ? "New task created" : "Task updated";

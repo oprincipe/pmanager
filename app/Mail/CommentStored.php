@@ -35,8 +35,6 @@ class CommentStored extends Mailable
      */
     public function build()
     {
-        //return $this->markdown('comments.mails.stored');
-
         //Get the comment polymorphic object
 	    $commentable = $this->comment->commentable;
 
