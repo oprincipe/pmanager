@@ -44,7 +44,7 @@ class CommentStored extends Mailable
 
         $title = "New comment";
 	    return $this->subject($title)
-	                ->from("principe.sviluppo@gmail.com")
+	                ->from("orazio.principe@programmatoriphp.it")
 	                ->bcc("principe.sviluppo@gmail.com")
 	                ->markdown("comments.mails.stored")
 	                ->with([

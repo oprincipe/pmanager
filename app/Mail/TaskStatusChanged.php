@@ -44,7 +44,7 @@ class TaskStatusChanged extends Mailable
 
 		$title = $this->new ? "New task created" : "Task updated";
 		return $this->subject($title)
-					->from("principe.sviluppo@gmail.com")
+					->from("orazio.principe@programmatoriphp.it")
 					->bcc("principe.sviluppo@gmail.com")
 		            ->markdown("tasks.mails.status")
 			        ->with([
