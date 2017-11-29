@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\Mail\CommentStored;
 use function explode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use function last;
 use function redirect;
-use function route;
 use function str_plural;
 use function strtolower;
 
@@ -49,6 +50,7 @@ class CommentsController extends Controller
      */
     public function store(Request $request)
     {
+
 	    $comment = Comment::create([
                        'body'               => $request->input("body"),
                        "url"                => $request->input("url"),
@@ -58,6 +60,16 @@ class CommentsController extends Controller
                    ]);
 
 	    if($comment) {
+
+		    //Send mail to company owner
+		    if(false) $comment = new Comment();
+		    $commentable = $comment->commentable;
+		    $owner_mail = $commentable->getContactMail();
+
+		    if(!empty($owner_mail)) {
+			    Mail::to($owner_mail)->send(new CommentStored($comment));
+		    }
+
 		    return back()->with("success", "Comment added successfully");
 	    }
 
