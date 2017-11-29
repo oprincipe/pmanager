@@ -35,5 +35,10 @@ Route::middleware(['auth'])->group(function() {
 
 	Route::get('projects/create/{id?}', 'ProjectsController@create');
 	Route::get('tasks/create/{project_id}', 'TasksController@create');
+	Route::post('tasks/{id}/send', 'TasksEmailController@send');
 
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

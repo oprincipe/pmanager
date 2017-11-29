@@ -3,7 +3,7 @@
 
 @section('content')
 
-
+    <div class="row">
     <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
 
 
@@ -38,7 +38,11 @@
                                     @if(Auth::user()->role_id == 1)
                                         <select class="form-control" name="user_id" id="user_id">
                                         @foreach($users as $owner)
-                                            <option value="{{ $owner->id }}">{{ $owner->fullName() }}</option>
+                                            <option value="{{ $owner->id }}"
+                                                    @if($owner->id == $company->user_id)
+                                                        selected="selected"
+                                                    @endif
+                                                    >{{ $owner->fullName() }}</option>
                                         @endforeach
                                         </select>
                                     @else
@@ -257,7 +261,7 @@
         </div>
 
     </div>
-
+    </div>
 @endsection
 
 

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TaskStatusChanged;
 use App\Project;
 use App\Task;
 use App\TaskStatus;
 use function back;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use function redirect;
 use function view;
 
@@ -105,6 +107,13 @@ class TasksController extends Controller
 			}
 
 			if($task->save()) {
+
+				//Send mail to company owner
+				$owner_mail = $project->company->email;
+				if(!empty($owner_mail)) {
+					Mail::to($owner_mail)->send(new TaskStatusChanged($task, true));
+				}
+
 				return redirect()->route('projects.show', ['project_id' => $task->project_id])
 					->with('success', 'Task created successfully');
 			}
@@ -181,6 +190,14 @@ class TasksController extends Controller
 		    }
 
 		    if($task->save()) {
+
+		    	//Send mail to company owner
+			    $owner_mail = $project->company->email;
+			    if(!empty($owner_mail)) {
+			    	Mail::to($owner_mail)->send(new TaskStatusChanged($task));
+			    }
+
+
 			    return redirect()->route('projects.show', ['project_id' => $task->project_id])
 			                     ->with('success', 'Task created successfully');
 		    }

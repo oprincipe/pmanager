@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use App\Role;
+use App\TaskStatus;
 use App\User;
 use function compact;
 use function dd;
@@ -117,11 +118,14 @@ class CompaniesController extends Controller
 		    return $this->accessDenied();
 	    }
 
+	    $task_statuses = TaskStatus::all();
+
 	    $data = array(
 		    'company' => $company,
 		    'comments' => $company->comments,
 		    'commentable_type' => "App\Company",
-		    'commentable_id' => $company->id
+		    'commentable_id' => $company->id,
+		    'task_statuses' => $task_statuses
 	    );
 
         return view("companies.show", $data);

@@ -2,9 +2,8 @@
 
 
 @section('content')
-
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3 col-lg-offset-3">
-
+    <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">Companies
@@ -30,5 +29,5 @@
             </div>
         </div>
     </div>
-
+    </div>
 @endsection

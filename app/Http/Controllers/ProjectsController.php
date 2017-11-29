@@ -26,7 +26,7 @@ class ProjectsController extends Controller
 	 */
 	public function index()
 	{
-		$projects = Project::where("user_id", Auth::user()->id)->paginate(2);
+		$projects = Project::where("user_id", Auth::user()->id)->paginate(20);
 
 		return view("projects.index", array("projects" => $projects));
 	}

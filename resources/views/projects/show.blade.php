@@ -2,10 +2,9 @@
 
 
 @section('content')
+    <div class="row">
 
-
-
-    <div class="row col-xs-9 col-sm-9 col-md-9 col-lg-9 pull-left">
+    <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 pull-left">
 
         <!-- Jumbotron -->
         <div class="well well-lg">
@@ -106,7 +105,7 @@
                                                             <input type="hidden" name="_method" value="delete" />
                                                         </form>
                                                         @endif
-
+                                                        
                                                     </td>
                                                     <td>
                                                         <b>{!! $task->name !!}</b>
@@ -148,36 +147,42 @@
             <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
         </div>-->
         <div class="sidebar-module">
-            <h4>Actions</h4>
-            <ol class="list-unstyled">
-                <li><a href="{{ URL::to('/projects/'.$project->id.'/edit') }}"><i class="fa fa-pencil-square-o"></i> Edit</a></li>
-                <li><a href="{{ URL::to('/projects/create') }}"><i class="fa fa-plus"></i> Add project</a></li>
-                <li><a href="{{ URL::to('/companies/'.$project->company_id) }}"><i class="fa fa-list"></i> Projects list</a></li>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Actions</h3>
+                </div>
+                <div class="panel-body">
+                    <ol class="list-unstyled">
+                        <li><a href="{{ URL::to('/projects/'.$project->id.'/edit') }}"><i class="fa fa-pencil-square-o"></i> Edit</a></li>
+                        <li><a href="{{ URL::to('/projects/create') }}"><i class="fa fa-plus"></i> Add project</a></li>
+                        <li><a href="{{ URL::to('/companies/'.$project->company_id) }}"><i class="fa fa-list"></i> Projects list</a></li>
 
-                <br />
-                <li><a href="{{ route('tasks.create')."/".$project->id }}"><i class="fa fa-tasks"></i> New task</a></li>
+                        <br />
+                        <li><a href="{{ route('tasks.create')."/".$project->id }}"><i class="fa fa-tasks"></i> New task</a></li>
 
-                <br />
+                        <br />
 
-                @if (Auth::user()->role_id == 1)
-                <li>
-                    <a href="#"
-                       onclick="
+                        @if (Auth::user()->role_id == 1)
+                            <li>
+                                <a href="#"
+                                   onclick="
                        var result = confirm('Are you sure you wish to delete this Project?');
                        if(result) {
                            event.preventDefault();
                            $('#delete-form').submit();
                        }"><i class="fa fa-trash"></i> Delete</a>
 
-                    <form id="delete-form" action="{{ route("projects.destroy", [$project->id]) }}"
-                          method="post" style="display: none">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="_method" value="delete" />
-                    </form>
+                                <form id="delete-form" action="{{ route("projects.destroy", [$project->id]) }}"
+                                      method="post" style="display: none">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" name="_method" value="delete" />
+                                </form>
 
-                </li>
-                @endif
-            </ol>
+                            </li>
+                        @endif
+                    </ol>
+                </div>
+            </div>
 
             <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 @include("partials.comments")
@@ -196,5 +201,5 @@
         -->
 
     </div>
-
+    </div>
 @endsection

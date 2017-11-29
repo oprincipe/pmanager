@@ -3,16 +3,19 @@
 
 @section('content')
 
-
+    <div class="row">
 
     <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
 
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <!-- Jumbotron -->
-            <div class="jumbotron">
-                <h3>{{ $company->name }}</h3>
-                <p class="lead">{{ $company->address }} {{ $company->city }} {{ $company->cap }} {{ $company->prov }} {{ $company->country }}</p>
-                <p class="lead">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ $company->name }}</h3>
+                </div>
+                <div class="panel-body">
+                    <p class="lead">{{ $company->address }} {{ $company->city }} {{ $company->cap }} {{ $company->prov }} {{ $company->country }}</p>
+                    <p class="lead">
                     <ul class="list-unstyled">
                         @if(!empty($company->website))
                             <li><a href="{{ URL::to($company->website) }}" target="_blank"><i class="fa fa-external-link"></i> {{ $company->website }}</a></li>
@@ -23,8 +26,8 @@
                         @if(!empty($company->pec))<li><a href="mailto:{{ $company->pec }}"><i class="fa fa-envelope-square"></i> {{ $company->pec }}</a></li>@endif
                         @if(!empty($company->skype))<li><a href="skype:{{$company->skype}}?chat"><i class="fa fa-skype"></i> {{ $company->skype }}</a></li>@endif
                     </ul>
-                </p>
-                <!--<p><a class="btn btn-lg btn-success" href="#" role="button">Get started today</a></p>-->
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -102,32 +105,28 @@
                                         </td>
                                         <td class="text-nowrap col-xs-3">
                                             <ul class="list-group">
-                                            <?php
-                                                $task_statuses = App\TaskStatus::all();
-                                                foreach($task_statuses as $task_status)
-                                                {
-                                                	if($task_status->id == App\TaskStatus::STATUS_CLOSED) continue;
+                                            @foreach($task_statuses as $task_status)
+                                                @if($task_status->id == App\TaskStatus::STATUS_CLOSED)
+                                                    @continue;
+                                                @endif
 
-                                                    $tasks_count = $project->tasks_count($task_status->id);
+                                                    {{ $tasks_count = $project->tasks_count($task_status->id) }}
 
-                                                    if($tasks_count > 0) {
-                                                    ?>
+                                                    @if($tasks_count > 0)
                                                     <li class="list-group-item">
-                                                        <span class="badge"><?=(int) $tasks_count?></span>
-	                                                    <?=$task_status->icon()." ".$task_status->name?>
+                                                        <span class="badge">{{ (int) $tasks_count }}</span>
+	                                                    {!! $task_status->icon()." ".$task_status->name !!}
                                                     </li>
-                                                    <?
-                                                    }
-                                                }
-                                            ?>
+                                                    @endif
+                                            @endforeach
                                             </ul>
                                         </td>
                                         <td>
                                             {{ $project->updated_at->format('d/m/Y H:i:s') }}
                                         </td>
                                     </tr>
-                                </tbody>
                                 @endforeach
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -188,6 +187,6 @@
     </div>
 
 
-
+</div>
 
 @endsection
