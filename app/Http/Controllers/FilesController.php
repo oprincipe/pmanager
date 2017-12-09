@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Company;
 use App\File;
 use function back;
 use Illuminate\Http\Request;
@@ -24,10 +25,23 @@ class FilesController extends Controller
 			return back()->withInput()->withErrors("File not founds");
 		}
 
-		//Verifico permessi. Solo admin e proprietario
+		if(Auth::user()->id == $file->user_id) {
+			return true;
+		}
+
+		//Verifico permessi. Solo admin e proprietario della compagnia
 		$uploadable = $file->uploadable;
-		$uploadable_user = $uploadable->user;
-		if($uploadable_user->role_id != 1 && $uploadable_user->id != $file->user_id) {
+		if($uploadable instanceof Company) {
+			$company      = $uploadable;
+		}
+		else {
+			$company      = $uploadable->company;
+		}
+		$company_user = $company->user;
+
+
+
+		if(Auth::user()->role_id != 1 && Auth::user()->id != $company_user->id) {
 			return back()->withInput()->withErrors("Permission denied");
 		}
 
