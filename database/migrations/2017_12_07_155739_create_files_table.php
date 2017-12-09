@@ -14,7 +14,10 @@ class CreateFilesTable extends Migration
     public function up()
     {
 	    if(!Schema::hasTable('files')) {
-		    Schema::create('files', function (Blueprint $table) {
+
+		    Schema::dropIfExists('files');
+
+	    	Schema::create('files', function (Blueprint $table) {
 			    $table->increments('id');
 			    $table->string('filename', 255);
 			    $table->string('ext', 5);
