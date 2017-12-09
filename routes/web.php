@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function() {
 	Route::resource('companies', 'CompaniesController');
 	Route::resource('companiescredits', 'CompaniesCreditsController');
 	Route::resource('comments', 'CommentsController');
+	Route::resource('files', 'FilesController');
 	Route::resource('projects', 'ProjectsController');
 	Route::resource('roles', 'RolesController');
 	Route::resource('tasks', 'TasksController');

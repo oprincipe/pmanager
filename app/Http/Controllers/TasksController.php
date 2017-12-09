@@ -130,13 +130,17 @@ class TasksController extends Controller
      */
     public function show(Task $task)
     {
-    	$comments = $task->comments;
+    	$comments = $task->comments()->orderBy('updated_at','created_at')->get();
+	    $files    = $task->files()->orderBy('updated_at','created_at')->get();
 
 	    $data = array(
 		    'task' => $task,
 		    'comments' => $comments,
+		    'files' => $files,
 		    'commentable_type' => "App\Task",
-		    'commentable_id' => $task->id
+		    'commentable_id' => $task->id,
+		    'uploadable_type' => "App\Task",
+		    'uploadable_id' => $task->id,
 	    );
 
 	    return view("tasks.show", $data);

@@ -18,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
 	public function boot(Dispatcher $events)
 	{
 		$events->listen(BuildingMenu::class, function (BuildingMenu $event) {
+			$event->menu->menu = array();
 			$event->menu->add('MAIN NAVIGATION');
 			$event->menu->add(
 				[

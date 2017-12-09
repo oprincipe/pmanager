@@ -93,14 +93,17 @@ class ProjectsController extends Controller
 
 		$task_statuses = TaskStatus::all();
 		$comments = $project->comments()->orderBy('updated_at','created_at')->get();
-
+		$files    = $project->files()->orderBy('updated_at','created_at')->get();
 
 		$this->data = array(
 			'project' => $project,
 			'comments' => $comments,
+			'files'     => $files,
 			'task_statuses' => $task_statuses,
 			'commentable_type' => "App\Project",
-			'commentable_id' => $project->id
+			'commentable_id' => $project->id,
+			'uploadable_type' => "App\Project",
+			'uploadable_id' => $project->id,
 		);
 
 		return view("projects.show", $this->data);

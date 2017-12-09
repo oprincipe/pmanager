@@ -58,6 +58,11 @@ class Company extends Model
 		return $this->morphMany('App\Comment', 'commentable');
 	}
 
+	public function files()
+	{
+		return $this->morphMany('App\File', 'uploadable');
+	}
+
 	public function delete()
 	{
 		//Delete comments

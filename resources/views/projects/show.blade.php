@@ -26,8 +26,22 @@
         </div>
 
 
-        <div class="row col-xs-12 col-sm-6 col-md-6 col-lg-6 pull-right">
-            @include("partials.comment-form")
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 pull-right">
+                @include("partials.comment-form")
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
+                @include("partials.file-form")
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
+                @include("partials.files")
+            </div>
         </div>
 
         <div class="row">
@@ -166,11 +180,11 @@
                             <li>
                                 <a href="#"
                                    onclick="
-                       var result = confirm('Are you sure you wish to delete this Project?');
-                       if(result) {
-                           event.preventDefault();
-                           $('#delete-form').submit();
-                       }"><i class="fa fa-trash"></i> Delete</a>
+                                   var result = confirm('Are you sure you wish to delete this Project?');
+                                   if(result) {
+                                       event.preventDefault();
+                                       $('#delete-form').submit();
+                                   }"><i class="fa fa-trash"></i> Delete</a>
 
                                 <form id="delete-form" action="{{ route("projects.destroy", [$project->id]) }}"
                                       method="post" style="display: none">
@@ -184,8 +198,10 @@
                 </div>
             </div>
 
-            <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                @include("partials.comments")
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    @include("partials.comments")
+                </div>
             </div>
 
         </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'AdminLTE')
+@section('title', config('app.name'))
 
 @section('content_header')
     <h1>Dashboard</h1>
