@@ -4,6 +4,14 @@
 
 @section('title', 'Dashboard')
 
+@section('navbar_elements')
+    @if(Auth()->user())
+    <li>
+        <a href=""><i class="fa fa-user"></i> {{ Auth()->user()->fullName() }}</a>
+    </li>
+    @endif
+@stop
+
 @section('content_header')
     <h1>Dashboard</h1>
 @stop

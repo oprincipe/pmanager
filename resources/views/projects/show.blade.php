@@ -60,7 +60,7 @@
                             <!-- Tabs -->
                             <ul class="nav panel-tabs">
                                 @foreach($task_statuses as $task_status)
-                                    <li class="@if($task_status->id == App\TaskStatus::STATUS_STAND_BY) {{ "active" }} @endif">
+                                    <li class="@if($task_status->id == $active_status) {{ "active" }} @endif">
                                         <a href="#tab{{ $task_status->id }}" data-toggle="tab">
                                             {!! $task_status->icon() !!}  {{ $task_status->name }}
                                             <span class="badge"><?=(int) $project->tasks_count($task_status->id)?></span>
@@ -74,7 +74,7 @@
                         <div class="tab-content">
 
                             @foreach($task_statuses as $task_status)
-                                <div class="tab-pane @if($task_status->id == App\TaskStatus::STATUS_STAND_BY) {{ "active" }} @endif" id="tab{{ $task_status->id }}">
+                                <div class="tab-pane @if($task_status->id == $active_status) {{ "active" }} @endif" id="tab{{ $task_status->id }}">
 
                                     <div class="table table-responsive">
                                         <table class="table table-striped">

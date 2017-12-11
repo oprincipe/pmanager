@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use App\Project;
+use App\Task;
 use App\TaskStatus;
 use function back;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use function is_null;
 
 class ProjectsController extends Controller
@@ -26,9 +28,30 @@ class ProjectsController extends Controller
 	 */
 	public function index()
 	{
-		$projects = Project::where("user_id", Auth::user()->id)->paginate(20);
+		$user_companies = Auth::user()->companies()->get();
+		$company_ids = array();
+		foreach($user_companies as $company)
+		{
+			$company_ids[] = $company->id;
+		}
 
-		return view("projects.index", array("projects" => $projects));
+		$projects = Project::where("user_id", Auth::user()->id)
+			->whereIn("company_id", $company_ids, "or")
+            ->paginate(20);
+
+		/*
+		$projects = DB::table("projects")
+		->whereIn("company_id", $company_ids, "or")
+		->get();
+		 */
+
+		$task_statuses = TaskStatus::all();
+
+		$data = array(
+			"projects" => $projects,
+			'task_statuses' => $task_statuses,
+		);
+		return view("projects.index", $data);
 	}
 
 	/**
@@ -95,6 +118,15 @@ class ProjectsController extends Controller
 		$comments = $project->comments()->orderBy('updated_at','created_at')->get();
 		$files    = $project->files()->orderBy('updated_at','created_at')->get();
 
+		$active_status = TaskStatus::STATUS_STAND_BY;
+		$session_status = \session("selected_status");
+		if(!empty($session_status)) {
+			$active_status = $session_status;
+		}
+		else if(!empty(request()->get("task_status_id"))) {
+			$active_status = (int) request()->get("task_status_id");
+		}
+
 		$this->data = array(
 			'project' => $project,
 			'comments' => $comments,
@@ -104,6 +136,7 @@ class ProjectsController extends Controller
 			'commentable_id' => $project->id,
 			'uploadable_type' => "App\Project",
 			'uploadable_id' => $project->id,
+			'active_status' => $active_status
 		);
 
 		return view("projects.show", $this->data);

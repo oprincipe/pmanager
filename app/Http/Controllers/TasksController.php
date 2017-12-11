@@ -203,7 +203,10 @@ class TasksController extends Controller
 
 
 			    return redirect()->route('projects.show', ['project_id' => $task->project_id])
-			                     ->with('success', 'Task created successfully');
+			                     ->with(array(
+					                        'success' => 'Task created successfully',
+					                        'selected_status'  => $task->status_id
+			                            ));
 		    }
 	    }
 
