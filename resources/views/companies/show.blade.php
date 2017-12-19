@@ -179,8 +179,14 @@
                         <li><a href="{{ URL::to('/companies') }}"><i class="fa fa-list"></i> Back to list</a></li>
                         <li><a href="{{ URL::to('/companies/'.$company->id.'/edit') }}"><i
                                         class="fa fa-pencil-square-o"></i> Edit</a></li>
-                        <li><a href="{{ URL::to('/projects/create/'.$company->id) }}"><i class="fa fa-plus"></i> Add
-                                                                                                                 project</a>
+                        <li>
+                            <a href="{{ URL::to('/projects/create/'.$company->id) }}"
+                            ><i class="fa fa-plus"></i> Add project</a>
+                        </li>
+
+                        <li>
+                            <a href="{{ URL::to('/reports/company/'.$company->id) }}" target="_blank"
+                            ><i class="fa fa-print"></i> Print</a>
                         </li>
 
 

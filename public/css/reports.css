@@ -1,0 +1,34 @@
+body {
+    margin: 0;
+}
+
+.header {
+    background-color: #f7f8f5;
+}
+
+.table_header {
+    font-family: Avenir, Helvetica, sans-serif;
+    box-sizing: border-box;
+    background-color: #f5f8fa;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+}
+
+.table_header tr td {
+    font-family: Avenir, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+.header_title {
+    font-family: Avenir, Helvetica, sans-serif;
+    box-sizing: border-box;
+    color: #bbbfc3;
+    font-size: 19px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0 1px 0 white;
+}

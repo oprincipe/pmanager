@@ -119,7 +119,6 @@ class CompaniesController extends Controller
 	    }
 
 	    $task_statuses = TaskStatus::all();
-
 	    $comments = $company->comments()->orderBy('updated_at','created_at')->get();
 	    $files = $company->files()->orderBy('updated_at','created_at')->get();
 
