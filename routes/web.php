@@ -41,7 +41,6 @@ Route::middleware(['auth'])->group(function() {
 
 	//Route::get('reports/company/(id}/info', 'ReportsController@company_info');
 	Route::get('reports/company/{company_id}', 'ReportsController@company_info');
-
 });
 
 Auth::routes();
