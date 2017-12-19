@@ -33,10 +33,14 @@ Route::middleware(['auth'])->group(function() {
 	Route::resource('roles', 'RolesController');
 	Route::resource('tasks', 'TasksController');
 	Route::resource('users', 'UsersController');
+	Route::resource('reports', 'ReportsController');
 
 	Route::get('projects/create/{id?}', 'ProjectsController@create');
 	Route::get('tasks/create/{project_id}', 'TasksController@create');
 	Route::post('tasks/{id}/send', 'TasksEmailController@send');
+
+	//Route::get('reports/company/(id}/info', 'ReportsController@company_info');
+	Route::get('reports/company/{company_id}', 'ReportsController@company_info');
 
 });
 
