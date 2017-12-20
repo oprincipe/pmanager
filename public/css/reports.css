@@ -1,14 +1,38 @@
-body {
-    margin: 0;
+@page {
+    margin-top: 50px;
+    margin-bottom: 50px;
 }
 
 .header {
     background-color: #f7f8f5;
 }
 
+.page_break {
+    page-break-after: always;
+}
+
+.page_header {
+    position: fixed;
+    top: -25px;
+}
+
+.page_footer {
+    position: fixed;
+    bottom: -15px;
+}
+
+.pagenum:before {
+    content: counter(page);
+}
+
+.pagetot:before {
+    content: page;
+}
+
 .table_header {
     font-family: Avenir, Helvetica, sans-serif;
     box-sizing: border-box;
+    border: 1px solid #ccc;
     background-color: #f5f8fa;
     margin: 0;
     padding: 0;
@@ -16,6 +40,11 @@ body {
     -premailer-cellpadding: 0;
     -premailer-cellspacing: 0;
     -premailer-width: 100%;
+}
+
+.table_header th {
+    background-color: rgba(7,9,5,0.44);
+
 }
 
 .table_header tr td {
@@ -31,4 +60,18 @@ body {
     font-weight: bold;
     text-decoration: none;
     text-shadow: 0 1px 0 white;
+}
+
+.block-info {
+    background-color: #f7f8f5;
+    font-size: 14px;
+    padding: 5px;
+}
+
+.td_header {
+    background-color: #CCC;
+}
+
+.text-center {
+    text-align: center;
 }

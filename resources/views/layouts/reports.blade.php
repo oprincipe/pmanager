@@ -10,20 +10,25 @@
 
     <link href="{{ asset('css/reports.css') }}" rel="stylesheet">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ env('app.name', 'Laravel') }}</title>
 
 </head>
 <body>
-    <div class="header">
-        <table class="table_header" cellspacing="0" cellpadding="5">
-            <tr>
-                <td>
-                    {{ config('app.name') }}
-                </td>
-            </tr>
-        </table>
+    <div class="page_header">
+        <div class="header">
+            <table class="table_header" cellspacing="0" cellpadding="5">
+                <tr>
+                    <td>
+                        {{ config('app.name') }}
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div id="app">
+
+    <div class="page_footer">Page: <span class="pagenum"></span></div>
+
+    <div class="content">
         @yield('content')
     </div>
 </body>

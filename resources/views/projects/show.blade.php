@@ -170,6 +170,10 @@
                         <li><a href="{{ URL::to('/projects/'.$project->id.'/edit') }}"><i class="fa fa-pencil-square-o"></i> Edit</a></li>
                         <li><a href="{{ URL::to('/projects/create') }}"><i class="fa fa-plus"></i> Add project</a></li>
                         <li><a href="{{ URL::to('/companies/'.$project->company_id) }}"><i class="fa fa-list"></i> Projects list</a></li>
+                        <li>
+                            <a href="{{ URL::to('/reports/project/'.$project->id) }}" target="_blank"
+                            ><i class="fa fa-print"></i> Print</a>
+                        </li>
 
                         <br />
                         <li><a href="{{ route('tasks.create')."/".$project->id }}"><i class="fa fa-tasks"></i> New task</a></li>
