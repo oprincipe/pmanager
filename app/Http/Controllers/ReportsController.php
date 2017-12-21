@@ -56,11 +56,13 @@ class ReportsController extends Controller
 		$task_statuses = TaskStatus::all();
 		$comments = $project->comments()->orderBy('updated_at','created_at')->get();
 		$files = $project->files()->orderBy('updated_at','created_at')->get();
+		$tasks_resume = $project->get_task_hours_resume();
 
 		$data = [
 			'company' => $project->company,
 			'project' => $project,
 			'task_statuses' => $task_statuses,
+			'tasks_resume' => $tasks_resume,
 			'comments' => $comments,
 			'files' => $files,
 		];

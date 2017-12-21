@@ -127,11 +127,15 @@ class ProjectsController extends Controller
 			$active_status = (int) request()->get("task_status_id");
 		}
 
+		$tasks_resume = $project->get_task_hours_resume();
+
+
 		$this->data = array(
 			'project' => $project,
 			'comments' => $comments,
 			'files'     => $files,
 			'task_statuses' => $task_statuses,
+			'tasks_resume' => $tasks_resume,
 			'commentable_type' => "App\Project",
 			'commentable_id' => $project->id,
 			'uploadable_type' => "App\Project",

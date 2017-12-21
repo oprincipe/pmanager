@@ -90,7 +90,7 @@
                                     <table class="table table-striped">
                                         <thead>
                                         <tr>
-                                            <th>#</th>
+                                            <th>Actions</th>
                                             <th>Name</th>
                                             <td>Tasks</td>
                                             <th>Last update</th>
@@ -109,20 +109,26 @@
                                                     ><i class="fa fa-pencil"></i>
                                                     </a>
 
-                                                    <a href="#"
-                                                       onclick="
-                                                               var result = confirm('Are you sure you wish to delete this project?');
-                                                               if(result) {
-                                                               event.preventDefault();
-                                                               $('#delete-project-{{ $project->id }}').submit();
-                                                               }"><i class="fa fa-trash"></i></a>
+                                                    <a href="{{ URL::to('/reports/project/'.$project->id) }}" target="_blank"
+                                                    ><i class="fa fa-print"></i></a>
 
-                                                    <form id="delete-project-{{ $project->id }}"
-                                                          action="{{ route("projects.destroy", [$project->id]) }}"
-                                                          method="post" style="display: none">
-                                                        {{ csrf_field() }}
-                                                        <input type="hidden" name="_method" value="delete" />
-                                                    </form>
+                                                    @if(Auth()->user()->role_id == 1)
+                                                        <span style="padding-left: 10px"></span>
+                                                        <a href="#"
+                                                           onclick="
+                                                                   var result = confirm('Are you sure you wish to delete this project?');
+                                                                   if(result) {
+                                                                   event.preventDefault();
+                                                                   $('#delete-project-{{ $project->id }}').submit();
+                                                                   }"><i class="fa fa-trash"></i></a>
+
+                                                        <form id="delete-project-{{ $project->id }}"
+                                                              action="{{ route("projects.destroy", [$project->id]) }}"
+                                                              method="post" style="display: none">
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="_method" value="delete" />
+                                                        </form>
+                                                    @endif
 
                                                 </td>
                                                 <td>

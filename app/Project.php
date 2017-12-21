@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Project extends Model
 {
@@ -60,6 +61,23 @@ class Project extends Model
 		}
 		$res = Task::where($data)->count();
 		return $res;
+	}
+
+	/**
+	 * Count hours took for every status id
+	 */
+	public function get_task_hours_resume()
+	{
+		$sql = "SELECT
+				t.`status_id`,
+				t2.name,
+				COUNT(t.hours) AS tot_hours
+				FROM tasks t
+				INNER JOIN task_statuses t2 ON t.status_id = t2.id
+				WHERE t.`project_id` = ".$this->id."
+				GROUP BY t.`status_id`, t2.name";
+		$rs = DB::select($sql);
+		return $rs;
 	}
 
 

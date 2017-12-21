@@ -7,8 +7,8 @@
             width: 100px;
         }
 
-        .cell_big {
-            width: 100%;
+        .cell_medium {
+            width: 200px;
             white-space: normal;
         }
 
@@ -21,18 +21,70 @@
     {{-- <small><pre>{{ $company->description }}</pre></small> --}}
 
 
-    <table class="table_header" cellpadding="3" cellspacing="0">
-        <tr>
-            <th><b>Project info</b></th>
-        </tr>
-        <tr>
+    <table cellspacing="0" cellpadding="2" style="width: 100%">
+        <tr class="valign-top">
             <td>
-                <div class="block-info">
-                    <div>{!! nl2br($project->description) !!}</div>
-                </div>
+                <table class="table_header" cellpadding="3" cellspacing="0">
+                    <tr class="valign-top">
+                        <th><b>Project info</b></th>
+                    </tr>
+                    <tr class="valign-top">
+                        <td>
+                            <div class="block-info">
+                                <div>{!! nl2br($project->description) !!}</div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td class="cell_medium">
+                <table class="table_header" cellpadding="3" cellspacing="0">
+                    <tr class="valign-top">
+                        <th><b>Tasks resume</b></th>
+                    </tr>
+                    <tr class="valign-top">
+                        <td>
+                            @if (isset($tasks_resume) && count($tasks_resume) > 0)
+
+                                <table class="table_header" border="1" cellpadding="1" cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th class="border-grey">Status</th>
+                                        <th class="text-right border-grey">Hours</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+						            <?php
+						            $tot_hours = 0;
+						            ?>
+                                    @foreach($tasks_resume as $task_resume)
+							            <?php
+							            $tot_hours += $task_resume->tot_hours;
+							            ?>
+                                        <tr>
+                                            <td class="border-grey">{{ ucfirst($task_resume->name) }}</td>
+                                            <td class="text-right border-grey">{{ $task_resume->tot_hours }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th class="border-grey">Totals</th>
+                                        <th class="text-right border-grey">{{ $tot_hours }}</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+
+                            @else
+                                <em>No task resume yet</em>
+                            @endif
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>
+
 
 
     @foreach($task_statuses as $task_status)
