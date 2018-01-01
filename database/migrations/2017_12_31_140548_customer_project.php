@@ -16,7 +16,7 @@ class ProjectCustomers extends Migration
 	    Schema::dropIfExists('customer_projects');
 	    Schema::dropIfExists('project_user');
 
-        Schema::create('customer_project', function (Blueprint $table) {
+        Schema::create('customer_projects', function (Blueprint $table) {
 	        $table->increments('id');
 	        $table->integer('project_id')->unsigned();
 	        $table->integer('customer_id')->unsigned();
