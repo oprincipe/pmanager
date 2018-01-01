@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use App\File;
-use function back;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use function back;
 use function response;
-use function str_replace;
 
 class FilesController extends Controller
 {

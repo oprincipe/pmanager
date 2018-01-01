@@ -31,4 +31,23 @@
       'PDF' => 'Barryvdh\\DomPDF\\Facade',
     ),
   ),
+  'laravelcollective/html' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Collective\\Html\\HtmlServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Form' => 'Collective\\Html\\FormFacade',
+      'Html' => 'Collective\\Html\\HtmlFacade',
+    ),
+  ),
+  'felixkiss/uniquewith-validator' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Felixkiss\\UniqueWithValidator\\ServiceProvider',
+    ),
+  ),
 );

@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\Company;
 use App\Project;
 use App\TaskStatus;
-use function back;
-use function ini_set;
 use PDF;
+use function ini_set;
 use function redirect;
-use function view;
 
 class ReportsController extends Controller
 {

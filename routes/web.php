@@ -30,14 +30,20 @@ Route::middleware(['auth'])->group(function() {
 	Route::resource('comments', 'CommentsController');
 	Route::resource('files', 'FilesController');
 	Route::resource('projects', 'ProjectsController');
+	Route::resource('customerproject', 'CustomerProjectController');
 	Route::resource('roles', 'RolesController');
 	Route::resource('tasks', 'TasksController');
 	Route::resource('users', 'UsersController');
 	Route::resource('reports', 'ReportsController');
+	Route::resource('customers', 'CustomersController');
 
 	Route::get('projects/create/{id?}', 'ProjectsController@create');
+
 	Route::get('tasks/create/{project_id}', 'TasksController@create');
 	Route::post('tasks/{id}/send', 'TasksEmailController@send');
+
+	Route::get('customerproject/{customer_id}/{project_id}/unlink', 'CustomerProjectController@unlink')
+	     ->name("customerproject.unlink");
 
 	//Route::get('reports/company/(id}/info', 'ReportsController@company_info');
 	Route::get('reports/company/{company_id}', 'ReportsController@company_info');

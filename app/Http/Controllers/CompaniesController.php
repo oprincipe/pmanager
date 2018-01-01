@@ -6,8 +6,6 @@ use App\Company;
 use App\Role;
 use App\TaskStatus;
 use App\User;
-use function compact;
-use function dd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use function redirect;
@@ -37,7 +35,7 @@ class CompaniesController extends Controller
      */
     public function index()
     {
-    	if(Auth::user()->role_id == 1) {
+	    if(Auth::user()->role_id == Role::SUPER_ADMIN) {
 		    $companies = Company::all();
 	    }
     	else {

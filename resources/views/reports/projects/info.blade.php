@@ -24,14 +24,14 @@
     <table cellspacing="0" cellpadding="2" style="width: 100%">
         <tr class="valign-top">
             <td>
-                <table class="table_header" cellpadding="3" cellspacing="0">
+                <table class="table_header" cellpadding="3" cellspacing="0" width="500">
                     <tr class="valign-top">
-                        <th><b>Project info</b></th>
+                        <th><b>{{ $project->name }}</b></th>
                     </tr>
                     <tr class="valign-top">
                         <td>
                             <div class="block-info">
-                                <div>{!! nl2br($project->description) !!}</div>
+                                <div class="text-small">{!! strip_tags($project->description,"<br>")  !!}</div>
                             </div>
                         </td>
                     </tr>
@@ -46,7 +46,7 @@
                         <td>
                             @if (isset($tasks_resume) && count($tasks_resume) > 0)
 
-                                <table class="table_header" border="1" cellpadding="1" cellspacing="0">
+                                <table class="table_header" border="1" cellpadding="1" cellspacing="2">
                                     <thead>
                                     <tr>
                                         <th class="border-grey">Status</th>

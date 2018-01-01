@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Company;
+use App\Customer;
+use App\CustomerProject;
 use App\Project;
-use App\Task;
 use App\TaskStatus;
-use function back;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
+use function back;
 use function is_null;
 
 class ProjectsController extends Controller
 {
 	private $data;
+	private $project;
 
 	public function __construct()
 	{
@@ -113,6 +114,7 @@ class ProjectsController extends Controller
 	public function show(Project $project)
 	{
 		$project = $project->find($project->id);
+		$this->project = $project;
 
 		$task_statuses = TaskStatus::all();
 		$comments = $project->comments()->orderBy('updated_at','created_at')->get();
@@ -126,9 +128,20 @@ class ProjectsController extends Controller
 		else if(!empty(request()->get("task_status_id"))) {
 			$active_status = (int) request()->get("task_status_id");
 		}
-
 		$tasks_resume = $project->get_task_hours_resume();
 
+		//User customer's list
+		$customers = Customer::where("user_id", Auth::user()->id)
+		                     ->whereNOTIn("id", function($query) {
+			                     $query->select('customer_id')
+			                           ->from(with(new CustomerProject())->getTable())
+			                           ->where('project_id', $this->project->id);
+		                     })
+		                     ->orderBy('name')->orderBy('surname')->get();
+
+		//User project customers
+		$customers_project = $project->customers()->where('user_id', Auth::user()->id)
+		                                          ->orderBy('name')->orderBy('surname')->get();
 
 		$this->data = array(
 			'project' => $project,
@@ -140,7 +153,9 @@ class ProjectsController extends Controller
 			'commentable_id' => $project->id,
 			'uploadable_type' => "App\Project",
 			'uploadable_id' => $project->id,
-			'active_status' => $active_status
+			'active_status' => $active_status,
+			'customers' => $customers,
+			'customers_project' => $customers_project
 		);
 
 		return view("projects.show", $this->data);

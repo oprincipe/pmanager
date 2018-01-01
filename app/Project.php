@@ -82,14 +82,13 @@ class Project extends Model
 
 
 	/**
-	 * A project belongs to many users
-	 * Laravel search for a Model named ProjectUser
+	 * A project belongs to many Customers
+	 * Laravel search for a Model named CustomerProject
 	 */
-	public function users()
+	public function customers()
 	{
-		return $this->belongsToMany("App\User");
+		return $this->belongsToMany("App\Customer", "customer_projects");
 	}
-
 
 
 	public function comments()

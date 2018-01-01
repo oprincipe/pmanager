@@ -118,6 +118,7 @@
 
             <!-- Main content -->
             <section class="content">
+                @include("partials.errors")
                 @yield('content')
             </section>
             <!-- /.content -->

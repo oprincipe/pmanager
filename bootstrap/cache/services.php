@@ -27,12 +27,16 @@
     23 => 'Laravel\\Tinker\\TinkerServiceProvider',
     24 => 'JeroenNoten\\LaravelAdminLte\\ServiceProvider',
     25 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    26 => 'Unisharp\\Ckeditor\\ServiceProvider',
-    27 => 'App\\Providers\\AppServiceProvider',
-    28 => 'App\\Providers\\AuthServiceProvider',
-    29 => 'App\\Providers\\EventServiceProvider',
-    30 => 'App\\Providers\\RouteServiceProvider',
-    31 => 'Barryvdh\\DomPDF\\ServiceProvider',
+    26 => 'Collective\\Html\\HtmlServiceProvider',
+    27 => 'Felixkiss\\UniqueWithValidator\\ServiceProvider',
+    28 => 'Unisharp\\Ckeditor\\ServiceProvider',
+    29 => 'App\\Providers\\AppServiceProvider',
+    30 => 'App\\Providers\\AuthServiceProvider',
+    31 => 'App\\Providers\\EventServiceProvider',
+    32 => 'App\\Providers\\RouteServiceProvider',
+    33 => 'Barryvdh\\DomPDF\\ServiceProvider',
+    34 => 'Collective\\Html\\HtmlServiceProvider',
+    35 => 'Felixkiss\\UniqueWithValidator\\ServiceProvider',
   ),
   'eager' => 
   array (
@@ -49,12 +53,14 @@
     10 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
     11 => 'JeroenNoten\\LaravelAdminLte\\ServiceProvider',
     12 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    13 => 'Unisharp\\Ckeditor\\ServiceProvider',
-    14 => 'App\\Providers\\AppServiceProvider',
-    15 => 'App\\Providers\\AuthServiceProvider',
-    16 => 'App\\Providers\\EventServiceProvider',
-    17 => 'App\\Providers\\RouteServiceProvider',
-    18 => 'Barryvdh\\DomPDF\\ServiceProvider',
+    13 => 'Felixkiss\\UniqueWithValidator\\ServiceProvider',
+    14 => 'Unisharp\\Ckeditor\\ServiceProvider',
+    15 => 'App\\Providers\\AppServiceProvider',
+    16 => 'App\\Providers\\AuthServiceProvider',
+    17 => 'App\\Providers\\EventServiceProvider',
+    18 => 'App\\Providers\\RouteServiceProvider',
+    19 => 'Barryvdh\\DomPDF\\ServiceProvider',
+    20 => 'Felixkiss\\UniqueWithValidator\\ServiceProvider',
   ),
   'deferred' => 
   array (
@@ -155,6 +161,10 @@
     'validator' => 'Illuminate\\Validation\\ValidationServiceProvider',
     'validation.presence' => 'Illuminate\\Validation\\ValidationServiceProvider',
     'command.tinker' => 'Laravel\\Tinker\\TinkerServiceProvider',
+    'html' => 'Collective\\Html\\HtmlServiceProvider',
+    'form' => 'Collective\\Html\\HtmlServiceProvider',
+    'Collective\\Html\\HtmlBuilder' => 'Collective\\Html\\HtmlServiceProvider',
+    'Collective\\Html\\FormBuilder' => 'Collective\\Html\\HtmlServiceProvider',
   ),
   'when' => 
   array (
@@ -195,6 +205,9 @@
     array (
     ),
     'Laravel\\Tinker\\TinkerServiceProvider' => 
+    array (
+    ),
+    'Collective\\Html\\HtmlServiceProvider' => 
     array (
     ),
   ),
