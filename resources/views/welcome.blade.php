@@ -51,12 +51,21 @@
 
             .links > a {
                 color: #636b6f;
-                padding: 0 25px;
+                padding: 5px 25px 5px 25px;
                 font-size: 12px;
                 font-weight: 600;
                 letter-spacing: .1rem;
                 text-decoration: none;
                 text-transform: uppercase;
+                border: 1px solid #0E0E0E;
+                border-radius: 5px;
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .links > a:hover {
+                color: #FAF72D;
+                background-color: #489BED;
             }
 
             .m-b-md {
@@ -67,14 +76,16 @@
     <body>
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
+                @auth
+                    <div class="top-right links">
                         <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
+                    </div>
+                @else
+                    <div class="top-right links">
+                        <a href="{{ route('login') }}">Admin Login</a>
                         {{-- <a href="{{ route('register') }}">Register</a> --}}
-                    @endauth
-                </div>
+                    </div>
+                @endauth
             @endif
 
             <div class="content">
@@ -86,7 +97,15 @@
                     <em>Principe Orazio - php senior software developer</em>
                 </div>
 
-                <div class=""
+                @auth
+                @else
+                    <p>
+                    <div class="links">
+                        <a href="{{ route('customer.login') }}">Customer Login</a>
+                    </div>
+                    </p>
+                @endauth
+
             </div>
         </div>
     </body>

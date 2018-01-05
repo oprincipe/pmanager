@@ -52,9 +52,11 @@ class CustomersController extends Controller
 			$fields['pec'] = 'string|email|max:200';
 		}
 
-
 		if($customer->id > 0) {
-			$fields['email'] = 'unique_with:customers,user_id,'.$customer->id;
+			//dd($customer);
+			//$fields['email'] = 'unique_with:customers,user_id,'.$customer->id." = id";
+
+			//Validation after this method
 		}
 		else {
 			//'<field1>' => 'unique_with:<table>,<field2>[,<field3>,...,<ignore_rowid>]',
@@ -72,13 +74,15 @@ class CustomersController extends Controller
 			 * Non-alphanumeric (For example: !, $, #, or %)
 			 * Unicode characters
 			 */
+			//$fields['password'] = 'required|string|min:6|confirmed';
 			//$fields["password"] = 'min:8|regex:/^.*(?=.{3,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%@]).*$/';
-			$fields["password"] = 'min:8';
 		}
 
 
 		return Validator::make($data, $fields);
 	}
+
+
 
 	/**
      * Display a listing of the resource.
@@ -123,6 +127,10 @@ class CustomersController extends Controller
 	    foreach($fields as $field)
 	    {
 		    $customer->$field = $request->post($field);
+	    }
+
+	    if(!empty($request->post("password"))) {
+		    $customer->password = bcrypt($request->post('password'));
 	    }
 
 	    $customer->user_id = Auth::user()->id;
@@ -174,10 +182,23 @@ class CustomersController extends Controller
 		    return back()->withErrors($validator)->withInput();
 	    }
 
+	    //Check unique email for this user id account
+	    if(!empty($customer->id)) {
+		    $c = Customer::where("user_id", Auth::user()->id)->where("email", Request::capture()->post("email"))->whereNotIn("id", [$customer->id])->first();
+		    if(!empty($c)) {
+			    $validator->getMessageBag()->add('email', 'This email is already used by another customer');
+			    return back()->withErrors($validator)->withInput();
+		    }
+	    }
+
 	    $fields = $customer->getFillable();
 	    foreach($fields as $field)
 	    {
 		    $customer->$field = $request->post($field);
+	    }
+
+	    if(!empty($request->post("password"))) {
+		    $customer->password = bcrypt($request->post('password'));
 	    }
 
 	    $customer->deleted = false;
@@ -191,6 +212,34 @@ class CustomersController extends Controller
 
 	    return redirect(route("customers.index"));
     }
+
+
+	/**
+	 * Create the account to let the customer login on backend
+	 *
+	 * @param int $customer_id
+	 */
+    public function createAccount($customer_id, Request $request)
+    {
+    	//Load customer
+    	$customer = Customer::find($customer_id);
+
+    	//Load the user owner
+	    $user = $customer->user;
+	    //dd($user);
+
+		//Verify if customer has already a login account with his email
+    	$account = $customer->account;
+		if(empty($account->id)) {
+			dd($customer);
+		}
+		else {
+			dd($account);
+		}
+
+    }
+
+
 
     /**
      * Remove the specified resource from storage.

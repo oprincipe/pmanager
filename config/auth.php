@@ -1,5 +1,6 @@
 <?php
 
+
 return [
 
     /*
@@ -17,6 +18,9 @@ return [
         'guard' => 'web',
         'passwords' => 'users',
     ],
+
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -36,15 +40,25 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
+	    'web' => [
+		    'driver' => 'session',
+		    'provider' => 'users',
+	    ],
 
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-        ],
+	    'customer' => [
+		    'driver' => 'session',
+		    'provider' => 'customers',
+	    ],
+
+	    'api' => [
+		    'driver' => 'token',
+		    'provider' => 'users',
+	    ],
+
+	    'customer-api' => [
+		    'driver' => 'token',
+		    'provider' => 'customers',
+	    ],
     ],
 
     /*
@@ -65,10 +79,17 @@ return [
     */
 
     'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\User::class,
-        ],
+
+	    'users' => [
+		    'driver' => 'eloquent',
+		    'model' => App\User::class,
+	    ],
+
+	    'customers' => [
+		    'driver' => 'eloquent',
+		    'model' => App\Customer::class,
+	    ],
+
 
         // 'users' => [
         //     'driver' => 'database',
@@ -92,11 +113,16 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
+	    'users' => [
+		    'provider' => 'users',
+		    'table' => 'password_resets',
+		    'expire' => 60,
+	    ],
+	    'customers' => [
+		    'provider' => 'customers',
+		    'table' => 'password_resets',
+		    'expire' => 60,
+	    ],
     ],
 
 ];

@@ -37,19 +37,33 @@ Route::middleware(['auth'])->group(function() {
 	Route::resource('reports', 'ReportsController');
 	Route::resource('customers', 'CustomersController');
 
+
 	Route::get('projects/create/{id?}', 'ProjectsController@create');
 
 	Route::get('tasks/create/{project_id}', 'TasksController@create');
-	Route::post('tasks/{id}/send', 'TasksEmailController@send');
+	//Route::post('tasks/{id}/send', 'TasksEmailController@send');
 
-	Route::get('customerproject/{customer_id}/{project_id}/unlink', 'CustomerProjectController@unlink')
-	     ->name("customerproject.unlink");
+	Route::get('customerproject/{customer_id}/{project_id}/unlink', 'CustomerProjectController@unlink')->name("customerproject.unlink");
 
 	//Route::get('reports/company/(id}/info', 'ReportsController@company_info');
 	Route::get('reports/company/{company_id}', 'ReportsController@company_info');
 	Route::get('reports/project/{project_id}', 'ReportsController@project_info');
+
 });
 
+
 Auth::routes();
+
+//Customers login
+Route::prefix("customer")->group(function() {
+	Route::get("/login", "Auth\CustomerLoginController@showLoginForm")->name("customer.login");
+	Route::post("/login", "Auth\CustomerLoginController@login")->name("customer.login.submit");
+});
+
+Route::prefix("customersarea")->group(function() {
+	Route::get("/dash", "CustomersArea\HomeController@index")->name("customersarea.dash");
+	Route::get("/task/{task_id}", "CustomersArea\TasksController@show")->name("customersarea.task");
+});
+
 
 Route::get('/home', 'HomeController@index')->name('home');

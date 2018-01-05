@@ -2,10 +2,14 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticable;
+use Illuminate\Notifications\Notifiable;
 
-class Customer extends Model
+class Customer extends Authenticable
 {
+	use Notifiable;
+
+	protected $guard = "customer";
 
 	protected $fillable = [
 		"user_id",
@@ -24,23 +28,34 @@ class Customer extends Model
 		"fax",
 		"mobile",
 		"type",
+		"password",
 		"deleted",
+	];
+
+	/**
+	 * The attributes that should be hidden for arrays.
+	 *
+	 * @var array
+	 */
+	protected $hidden = [
+		'password', 'remember_token',
 	];
 
 
 	/**
-	 * A customer is associated to many user
+	 * A customer is associated to an user
 	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function user()
 	{
-		return $this->belongsTo("\App\User");
+		return $this->belongsTo("App\User");
 	}
+
 
 	public function projects()
 	{
-		return $this->belongsToMany("App\Project");
+		return $this->belongsToMany("App\Project", "customer_projects");
 	}
 
 
@@ -60,5 +75,8 @@ class Customer extends Model
 
 		return trim($address);
 	}
+
+
+
 
 }

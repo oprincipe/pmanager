@@ -35,7 +35,7 @@
                                 <label for="customer-name">Name / Company name <span class="required">*</span></label>
                                 <input type="text" class="form-control" name="name" id="customer-name"
                                        placeholder="Name (or Company name)"
-                                       required spellcheck="false" value="{{ $customer->name }}"
+                                       required spellcheck="false" value="{{ old("name", $customer->name) }}"
                                 />
                             </div>
 
@@ -43,7 +43,7 @@
                                 <label for="customer-surname">Surname</label>
                                 <input type="text" class="form-control" name="surname" id="customer-surname"
                                        placeholder="Surname"
-                                       spellcheck="false" value="{{ $customer->surname }}"
+                                       spellcheck="false" value="{{ old("surname", $customer->surname) }}"
                                 />
                             </div>
 
@@ -52,7 +52,7 @@
                                 <label for="customer-pid">Personal ID (Fiscal code)</label>
                                 <input type="text" class="form-control" name="pid" id="customer-pid"
                                        placeholder="Personal ID"
-                                       spellcheck="false" value="{{ $customer->pid }}"
+                                       spellcheck="false" value="{{ old("pid", $customer->pid) }}"
                                 />
                             </div>
 
@@ -60,7 +60,7 @@
                                 <label for="customer-vat">VAT code</label>
                                 <input type="text" class="form-control" name="vat" id="customer-vat"
                                        placeholder="VAT Code"
-                                       spellcheck="false" value="{{ $customer->vat }}"
+                                       spellcheck="false" value="{{ old("vat", $customer->vat) }}"
                                 />
                             </div>
 
@@ -77,7 +77,7 @@
                                                 <label for="customer-email">Email <span class="required">*</span></label>
                                                 <input type="email" class="form-control" name="email" id="customer-email"
                                                        placeholder="Email"
-                                                       required spellcheck="false" value="{{ $customer->email }}"
+                                                       required spellcheck="false" value="{{ old("email", $customer->email) }}"
                                                 />
                                             </div>
 
@@ -85,7 +85,7 @@
                                                 <label for="customer-pec">Pec</label>
                                                 <input type="email" class="form-control" name="pec" id="customer-pec"
                                                        placeholder="Pec"
-                                                       spellcheck="false" value="{{ $customer->pec }}"
+                                                       spellcheck="false" value="{{ old("pec", $customer->pec) }}"
                                                 />
                                             </div>
 
@@ -93,7 +93,7 @@
                                                 <label for="customer-phone">Phone</label>
                                                 <input type="text" class="form-control" name="phone" id="customer-phone"
                                                        placeholder="Phone"
-                                                       spellcheck="false" value="{{ $customer->phone }}"
+                                                       spellcheck="false" value="{{ old("phone", $customer->phone) }}"
                                                 />
                                             </div>
 
@@ -101,7 +101,7 @@
                                                 <label for="customer-mobile">Mobile</label>
                                                 <input type="text" class="form-control" name="mobile" id="customer-mobile"
                                                        placeholder="Mobile"
-                                                       spellcheck="false" value="{{ $customer->mobile }}"
+                                                       spellcheck="false" value="{{ old("mobile", $customer->mobile) }}"
                                                 />
                                             </div>
 
@@ -109,7 +109,7 @@
                                                 <label for="customer-fax">Fax</label>
                                                 <input type="text" class="form-control" name="fax" id="customer-fax"
                                                        placeholder="Fax"
-                                                       spellcheck="false" value="{{ $customer->fax }}"
+                                                       spellcheck="false" value="{{ old("fax", $customer->fax) }}"
                                                 />
                                             </div>
 
@@ -128,7 +128,7 @@
                                                 <label for="customer-address">Address</label>
                                                 <input type="text" class="form-control" name="address" id="customer-address"
                                                        placeholder="Address"
-                                                       spellcheck="false" value="{{ $customer->address }}"
+                                                       spellcheck="false" value="{{ old("address", $customer->address) }}"
                                                 />
                                             </div>
 
@@ -136,7 +136,7 @@
                                                 <label for="customer-city">City</label>
                                                 <input type="text" class="form-control" name="city" id="customer-city"
                                                        placeholder="City"
-                                                       spellcheck="false" value="{{ $customer->city }}"
+                                                       spellcheck="false" value="{{ old("city", $customer->city) }}"
                                                 />
                                             </div>
 
@@ -144,7 +144,7 @@
                                                 <label for="customer-pcode">Postal code</label>
                                                 <input type="text" class="form-control" name="pcode" id="customer-pcode"
                                                        placeholder="Postal code"
-                                                       spellcheck="false" value="{{ $customer->pcode }}"
+                                                       spellcheck="false" value="{{ old("pcode", $customer->pcode) }}"
                                                 />
                                             </div>
 
@@ -152,7 +152,7 @@
                                                 <label for="customer-province">Province</label>
                                                 <input type="text" class="form-control" name="province" id="customer-province"
                                                        placeholder="Province"
-                                                       spellcheck="false" value="{{ $customer->province }}"
+                                                       spellcheck="false" value="{{ old("province", $customer->province) }}"
                                                 />
                                             </div>
 
@@ -160,7 +160,7 @@
                                                 <label for="customer-country">Country</label>
                                                 <input type="text" class="form-control" name="country" id="customer-country"
                                                        placeholder="Country"
-                                                       spellcheck="false" value="{{ $customer->country }}"
+                                                       spellcheck="false" value="{{ old("country", $customer->country) }}"
                                                 />
                                             </div>
 
@@ -196,7 +196,7 @@
                     </div>
                 </div>
 
-
+                @include("partials.customers.credentials-form")
 
             </div>
 
