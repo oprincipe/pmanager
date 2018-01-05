@@ -63,6 +63,7 @@ Route::prefix("customer")->group(function() {
 Route::prefix("customersarea")->group(function() {
 	Route::get("/dash", "CustomersArea\HomeController@index")->name("customersarea.dash");
 	Route::get("/task/{task_id}", "CustomersArea\TasksController@show")->name("customersarea.task");
+	Route::get("/file/{file_id}", "CustomersArea\FilesController@show")->name("customersarea.download");
 });
 
 
