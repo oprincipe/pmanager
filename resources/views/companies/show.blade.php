@@ -92,7 +92,7 @@
                                         <tr>
                                             <th>Actions</th>
                                             <th>Name</th>
-                                            <td>Tasks</td>
+                                            <th>Tasks</th>
                                             <th>Last update</th>
                                         </tr>
                                         </thead>

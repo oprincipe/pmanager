@@ -72,7 +72,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="user-password">Password (</label>
+                                <label for="user-password">Password</label>
                                 <input type="password" class="form-control" name="password" id="user-password"
                                        placeholder="Password to login"
                                        spellcheck="false" value=""

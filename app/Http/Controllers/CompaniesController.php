@@ -52,12 +52,16 @@ class CompaniesController extends Controller
      */
     public function create()
     {
-    	if(Auth::user()->role_id != 1) {
+    	if(Auth::user()->role_id != Role::SUPER_ADMIN) {
     		return $this->accessDenied();
         }
 
-    	$company = new Company();
-    	return view("companies.form", ["company" => $company]);
+    	$data = [
+    		"company" => new Company(),
+		    "users"   => User::all()
+		    ];
+
+    	return view("companies.form", $data);
     }
 
     /**
