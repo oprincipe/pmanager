@@ -231,14 +231,32 @@ class ProjectsController extends Controller
 
 			if(false) $task = new Task();
 			$task->status_id = (int) $task_status_id;
-			$task->save();
+			if($task->save()) {
 
-			$res = [
-				"err" => false,
-				"task" => $task,
-				"project" => $project,
-				"old_status" => $old_status
-			];
+				//Send mail to company owner
+				$owner_mail = $project->company->email;
+				if(!empty($owner_mail)) {
+					Mail::to($owner_mail)->send(new TaskStatusChanged($task, true));
+				}
+
+				$res = [
+					"err" => false,
+					"task" => $task,
+					"project" => $project,
+					"old_status" => $old_status
+				];
+
+			}
+			else {
+				$res = [
+					"err" => true,
+					"msg" => "Errors while saving task",
+					"task" => $task,
+					"project" => $project,
+					"old_status" => $old_status
+				];
+			}
+
 		}
 
 
