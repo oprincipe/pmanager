@@ -39,6 +39,8 @@ Route::middleware(['auth'])->group(function() {
 
 
 	Route::get('projects/create/{id?}', 'ProjectsController@create');
+	Route::post('projects/get_tasks', 'ProjectsController@ajax_getProjectTasks')->name("projects.get_tasks_by_status");
+	Route::post('projects/change_task_status', 'ProjectsController@ajax_changeTaskStatus')->name("projects.change_task_status");
 
 	Route::get('tasks/create/{project_id}', 'TasksController@create');
 	//Route::post('tasks/{id}/send', 'TasksEmailController@send');

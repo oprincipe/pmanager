@@ -12,11 +12,7 @@
                         <thead>
                         <tr>
                             <th>Actions</th>
-                            <th>Type</th>
                             <th>File name</th>
-                            <th>Size</th>
-                            <th>Uploaded by</th>
-                            <th>Upload date</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -44,11 +40,13 @@
                                     </form>
                                     @endif
                                 </td>
-                                <td><span class="{{ $file->getIcon() }}"></span></td>
-                                <td>{{ $file->filename }}</td>
-                                <td>{{ FileDimensionHelper::bytesToHuman($file->size) }}</td>
-                                <td>{{ $file->user->fullName() }}</td>
-                                <td><span class="text-muted">{{ $file->created_at->format('d/m/Y H:i:s') }}</span></td>
+                                <td>
+                                    <small>
+                                        <span class="{{ $file->getIcon() }}"></span>
+                                        {{ $file->filename }}
+                                        <br />{{ FileDimensionHelper::bytesToHuman($file->size) }}
+                                    </small>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

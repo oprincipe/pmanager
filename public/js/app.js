@@ -147,6 +147,30 @@ $(function () {
     }
 });
 
+function hideDisplayMessage(_type) {
+    setTimeout('$("#userMessage div.alert-' + _type + '").hide("slow")', 2000);
+}
+
+function displayErrorMessage(_msg) {
+    $("#userMessage div.alert-danger").html(_msg).show();
+    hideDisplayMessage('danger');
+}
+
+function displayInfoMessage(_msg) {
+    $("#userMessage div.alert-info").html(_msg).show();
+    hideDisplayMessage('info');
+}
+
+function displayWarningMessage(_msg) {
+    $("#userMessage div.alert-warning").html(_msg).show();
+    hideDisplayMessage('warning');
+}
+
+function displaySuccessMessage(_msg) {
+    $("#userMessage div.alert-success").html(_msg).show();
+    hideDisplayMessage('success');
+}
+
 /***/ }),
 /* 12 */
 /***/ (function(module, exports) {

@@ -17,3 +17,18 @@ $error_msgs = @$errors->all();
         </strong>
     </div>
 @endif
+
+<div id="userMessage">
+    <div class="alert alert-success" style="display: none">
+        <strong>Success!</strong> Indicates a successful or positive action.
+    </div>
+    <div class="alert alert-info" style="display: none">
+        <strong>Info!</strong> Indicates a neutral informative change or action.
+    </div>
+    <div class="alert alert-warning" style="display: none">
+        <strong>Warning!</strong> Indicates a warning that might need attention.
+    </div>
+    <div class="alert alert-danger" style="display: none">
+        <strong>Danger!</strong> Indicates a dangerous or potentially negative action.
+    </div>
+</div>

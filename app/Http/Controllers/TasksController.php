@@ -6,10 +6,10 @@ use App\Mail\TaskStatusChanged;
 use App\Project;
 use App\Task;
 use App\TaskStatus;
-use function back;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use function back;
 use function redirect;
 use function view;
 
@@ -212,6 +212,8 @@ class TasksController extends Controller
 
 	    return back()->withInput()->withErrors('Errors saving task');
     }
+
+
 
     /**
      * Remove the specified resource from storage.

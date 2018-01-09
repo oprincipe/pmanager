@@ -6,11 +6,14 @@ use App\Company;
 use App\Customer;
 use App\CustomerProject;
 use App\Project;
+use App\Task;
 use App\TaskStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use function back;
 use function is_null;
+use function view;
 
 class ProjectsController extends Controller
 {
@@ -116,7 +119,7 @@ class ProjectsController extends Controller
 		$project = $project->find($project->id);
 		$this->project = $project;
 
-		$task_statuses = TaskStatus::all();
+		$task_statuses = TaskStatus::all()->sortBy("position");
 		$comments = $project->comments()->orderBy('updated_at','created_at')->get();
 		$files    = $project->files()->orderBy('updated_at','created_at')->get();
 
@@ -160,6 +163,88 @@ class ProjectsController extends Controller
 
 		return view("projects.show", $this->data);
 	}
+
+	/**
+	 * Return json element with the list of tasks
+	 * depending of their status
+	 *
+	 * @param $project_id
+	 * @param $task_status_id
+	 */
+	public function ajax_getProjectTasks(Request $request)
+	{
+		$project_id = $request->project_id;
+		$task_status_id = $request->task_status_id;
+
+		$project = Project::find($project_id);
+		$task_status = TaskStatus::find($task_status_id);
+		$tasks = $project->tasks($task_status_id);
+
+		$data = [
+			"project" => $project,
+			"task_status" => $task_status,
+			"taks" => $tasks
+		];
+
+		$view = View::make("partials.tasks-project-list-block-status", $data);
+		$res = [
+			"html" => $view->render()
+		];
+
+		return \response()->json($res);
+	}
+
+
+	/**
+	 * Change the status of a given task
+	 *
+	 * @param Request $request
+	 */
+	public function ajax_changeTaskStatus(Request $request)
+	{
+		$project_id = $request->project_id;
+		$task_id    = $request->task_id;
+		$task_status_id = $request->task_status_id;
+
+		if(empty($project_id)) {
+			$res = [
+				"err" => true,
+				"msg" => "Project not set"
+			];
+		}
+		else if(empty($task_id)) {
+			$res = [
+				"err" => true,
+				"msg" => "Task not set"
+			];
+		}
+		else if(empty($task_status_id)) {
+			$res = [
+				"err" => true,
+				"msg" => "Task status not set"
+			];
+		}
+		else {
+			$project = Project::find($project_id);
+			$task    = Task::find($task_id);
+			$old_status = TaskStatus::find($task->status_id);
+
+			if(false) $task = new Task();
+			$task->status_id = (int) $task_status_id;
+			$task->save();
+
+			$res = [
+				"err" => false,
+				"task" => $task,
+				"project" => $project,
+				"old_status" => $old_status
+			];
+		}
+
+
+		return response()->json($res);
+	}
+
 
 	/**
 	 * Show the form for editing the specified resource.

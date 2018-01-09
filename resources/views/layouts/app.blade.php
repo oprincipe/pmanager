@@ -29,7 +29,6 @@
     <script src="{{ asset('js/app.js') }}"></script>
 @stop
 
-
 @section('content')
     <p>Welcome to this beautiful admin panel.</p>
 @stop

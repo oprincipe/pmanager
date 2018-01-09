@@ -32,14 +32,13 @@
                     @foreach($projects as $project)
                         <tr>
                             <td>
-                                <a href="{{ route("companies.show", $project->company_id) }}"><i class="fa fa-building"></i></a>
-                                <a href="{{ route("projects.show",$project->id) }}"><i class="fa fa-briefcase"></i></a>
+                                <a href="{{ route("projects.show",$project->id) }}"><i class="fa fa-folder-open"></i> </a>
                             </td>
                             <td>
-                                {{ $project->company->name }}
+                                <a href="{{ route("companies.show", $project->company_id) }}">{{ $project->company->name }}</a>
                             </td>
                             <td>
-                                {{ $project->name }}
+                                <a href="{{ route("projects.show",$project->id) }}">{{ $project->name }}</a>
                             </td>
                             <td>
                                 <table class="table table-condensed table-responsive" style="background-color: transparent;">
