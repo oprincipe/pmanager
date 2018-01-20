@@ -43,7 +43,7 @@ class ProjectsController extends Controller
 		}
 
 		if(Auth::user()->role_id == Role::SUPER_ADMIN) {
-			$projects = Project::whereIn("company_id", $company_ids)
+			$projects = Project::where("user_id","1",">=")
 			                   ->paginate(20);
 		}
 		else {
