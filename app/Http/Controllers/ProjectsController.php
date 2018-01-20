@@ -7,6 +7,7 @@ use App\Customer;
 use App\CustomerProject;
 use App\Mail\TaskStatusChanged;
 use App\Project;
+use App\Role;
 use App\Task;
 use App\TaskStatus;
 use Illuminate\Http\Request;
@@ -41,9 +42,15 @@ class ProjectsController extends Controller
 			$company_ids[] = $company->id;
 		}
 
-		$projects = Project::where("user_id", Auth::user()->id)
-			->whereIn("company_id", $company_ids, "or")
-            ->paginate(20);
+		if(Auth::user()->role_id == Role::SUPER_ADMIN) {
+			$projects = Project::whereIn("company_id", $company_ids)
+			                   ->paginate(20);
+		}
+		else {
+			$projects = Project::where("user_id", Auth::user()->id)
+			                   ->whereIn("company_id", $company_ids, "or")
+			                   ->paginate(20);
+		}
 
 		/*
 		$projects = DB::table("projects")
