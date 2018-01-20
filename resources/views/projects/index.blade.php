@@ -65,7 +65,7 @@
 
             </div>
             <div class="panel-footer">
-                {{-- $projects->links() --}}
+                {{  $projects->links() }}
             </div>
         </div>
     </div>
