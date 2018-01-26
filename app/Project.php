@@ -88,7 +88,7 @@ class Project extends Model
 				    SUM(t.`hours_real`) AS `tot_hours_real`,
 				    SUM(t.value) AS `tot_values`
 				FROM
-				    `pmanager`.`tasks` t
+				    `tasks` t
 				INNER JOIN task_statuses t2 ON t.status_id = t2.id
 				WHERE
 				t.`project_id` = ".$this->id."
