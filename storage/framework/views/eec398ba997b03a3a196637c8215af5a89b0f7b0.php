@@ -34,84 +34,108 @@
 
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <label for="task-hours"><i class="fa fa-user"></i> Expected hours:</label>
+                                    <label for="task-hours"><i class="fa fa-clock-o"></i> Quoted hours:</label>
                                     <?php echo e($task->hours); ?>
 
                                 </div>
-                                <?php if(!empty($task->days)): ?>
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <label for="task-days"><i class="fa fa-user"></i> Expected days:</label>
-                                        <?php echo e($task->days); ?>
-
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="row col-xs-12 col-sm-6 col-md-6 col-lg-6 pull-right">
-                        <?php echo $__env->make("partials.comment-form", array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    </div>
-
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Main informations</h3>
-                            </div>
-                            <div class="panel-body">
-
-                                <div class="container-fluid">
-                                <?php echo $task->description; ?>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label for="task-hours-real"><i class="fa fa-clock-o"></i> Real hours:</label>
+                                    <?php echo e($task->hours_real); ?>
 
                                 </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label for="task-value"><i class="fa fa-eur"></i>/<i class="fa fa-clock-o"></i> Quoted value:</label>
+                                    <?php echo e(money($task->getQuotedValue())); ?>
 
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label for="task-value"><i class="fa fa-eur"></i>/<i class="fa fa-clock-o"></i> Worked value:</label>
+                                    <?php echo e(money($task->getRealValue())); ?>
+
+                                </div>
                             </div>
                         </div>
                     </div>
 
 
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 pull-right">
+                            <?php echo $__env->make("partials.comment-form", array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                        </div>
+                    </div>
 
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
+                            <?php echo $__env->make("partials.file-form", array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                        </div>
+                    </div>
 
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
+                            <?php echo $__env->make("partials.files", array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Main informations</h3>
+                                </div>
+                                <div class="panel-body">
+
+                                    <div class="container-fluid">
+                                    <?php echo $task->description; ?>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </div>
 
         </div>
     </div>
 
     <div class="pull-right col-xs-12 col-sm-3 col-md-3 col-lg-3 blog-sidebar">
-        <div class="sidebar-module">
-            <h4>Actions</h4>
-            <ol class="list-unstyled">
-                <li><a href="<?php echo e(route('tasks.edit', $task->id)); ?>"><i class="fa fa-edit"></i> Edit task</a></li>
-                <li><a href="<?php echo e(URL::to('/companies/'.$task->company_id)); ?>"><i class="fa fa-building"></i> View company</a></li>
-                <li><a href="<?php echo e(URL::to('/projects/'.$task->project_id)); ?>"><i class="fa fa-briefcase"></i> View project</a></li>
-                <li><a href="<?php echo e(URL::to('/companies/')); ?>"><i class="fa fa-list"></i> All companies</a></li>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Actions</h3>
+            </div>
+            <div class="panel-body">
+                <ol class="list-unstyled">
+                    <li><a href="<?php echo e(route('tasks.edit', $task->id)); ?>"><i class="fa fa-edit"></i> Edit task</a></li>
+                    <li><a href="<?php echo e(URL::to('/companies/'.$task->company_id)); ?>"><i class="fa fa-building"></i> View company</a></li>
+                    <li><a href="<?php echo e(URL::to('/projects/'.$task->project_id)); ?>"><i class="fa fa-briefcase"></i> View project</a></li>
+                    <li><a href="<?php echo e(URL::to('/companies/')); ?>"><i class="fa fa-list"></i> All companies</a></li>
 
-                <?php if(Auth::user()->role_id == 1): ?>
-                <br />
-                <a href="#"
-                   onclick="
-                           var result = confirm('Are you sure you wish to delete this task?');
-                           if(result) {
-                           event.preventDefault();
-                           $('#delete-task-<?php echo e($task->id); ?>').submit();
-                           }"><i class="fa fa-trash"></i> Delete task</a>
+                    <?php if(Auth::user()->role_id == 1): ?>
+                        <br />
+                        <a href="#"
+                           onclick="
+                                   var result = confirm('Are you sure you wish to delete this task?');
+                                   if(result) {
+                                   event.preventDefault();
+                                   $('#delete-task-<?php echo e($task->id); ?>').submit();
+                                   }"><i class="fa fa-trash"></i> Delete task</a>
 
-                <form id="delete-task-<?php echo e($task->id); ?>" action="<?php echo e(route("tasks.destroy", [$task->id])); ?>"
-                      method="post" style="display: none">
-                    <?php echo e(csrf_field()); ?>
+                        <form id="delete-task-<?php echo e($task->id); ?>" action="<?php echo e(route("tasks.destroy", [$task->id])); ?>"
+                              method="post" style="display: none">
+                            <?php echo e(csrf_field()); ?>
 
-                    <input type="hidden" name="_method" value="delete" />
-                </form>
-                <?php endif; ?>
+                            <input type="hidden" name="_method" value="delete" />
+                        </form>
+                    <?php endif; ?>
 
-            </ol>
+                </ol>
+            </div>
+        </div>
 
-            <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <?php echo $__env->make("partials.comments", array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
             </div>
-
         </div>
 
     </div>

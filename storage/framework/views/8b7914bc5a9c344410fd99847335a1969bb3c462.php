@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title><?php echo e(config('app.name')); ?></title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -51,12 +51,21 @@
 
             .links > a {
                 color: #636b6f;
-                padding: 0 25px;
+                padding: 5px 25px 5px 25px;
                 font-size: 12px;
                 font-weight: 600;
                 letter-spacing: .1rem;
                 text-decoration: none;
                 text-transform: uppercase;
+                border: 1px solid #0E0E0E;
+                border-radius: 5px;
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .links > a:hover {
+                color: #FAF72D;
+                background-color: #489BED;
             }
 
             .m-b-md {
@@ -67,28 +76,37 @@
     <body>
         <div class="flex-center position-ref full-height">
             <?php if(Route::has('login')): ?>
-                <div class="top-right links">
-                    <?php if(auth()->guard()->check()): ?>
+                <?php if(auth()->guard()->check()): ?>
+                    <div class="top-right links">
                         <a href="<?php echo e(url('/home')); ?>">Home</a>
-                    <?php else: ?>
-                        <a href="<?php echo e(route('login')); ?>">Login</a>
-                        <a href="<?php echo e(route('register')); ?>">Register</a>
-                    <?php endif; ?>
-                </div>
+                    </div>
+                <?php else: ?>
+                    <div class="top-right links">
+                        <a href="<?php echo e(route('login')); ?>">Admin Login</a>
+                        
+                    </div>
+                <?php endif; ?>
             <?php endif; ?>
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    <?php echo e(config('app.name')); ?>
+
                 </div>
 
                 <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                    <em>Principe Orazio - php senior software developer</em>
                 </div>
+
+                <?php if(auth()->guard()->check()): ?>
+                <?php else: ?>
+                    <p>
+                    <div class="links">
+                        <a href="<?php echo e(route('customer.login')); ?>">Customer Login</a>
+                    </div>
+                    </p>
+                <?php endif; ?>
+
             </div>
         </div>
     </body>

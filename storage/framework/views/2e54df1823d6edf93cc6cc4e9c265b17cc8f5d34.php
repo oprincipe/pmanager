@@ -55,7 +55,11 @@
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
 
+
                     <ul class="nav navbar-nav">
+
+                        <?php echo $__env->yieldContent('navbar_elements'); ?>
+
                         <li>
                             <?php if(config('adminlte.logout_method') == 'GET' || !config('adminlte.logout_method') && version_compare(\Illuminate\Foundation\Application::VERSION, '5.3.0', '<')): ?>
                                 <a href="<?php echo e(url(config('adminlte.logout_url', 'auth/logout'))); ?>">
@@ -117,9 +121,8 @@
 
             <!-- Main content -->
             <section class="content">
-
+                <?php echo $__env->make("partials.errors", array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
                 <?php echo $__env->yieldContent('content'); ?>
-
             </section>
             <!-- /.content -->
             <?php if(config('adminlte.layout') == 'top-nav'): ?>
@@ -133,9 +136,12 @@
     <!-- ./wrapper -->
 <?php $__env->stopSection(); ?>
 
+
+
 <?php $__env->startSection('adminlte_js'); ?>
     <script src="<?php echo e(asset('vendor/adminlte/dist/js/adminlte.min.js')); ?>"></script>
     <?php echo $__env->yieldPushContent('js'); ?>
+    <script src="<?php echo e(asset('js/globals.js')); ?>"></script>
     <?php echo $__env->yieldContent('js'); ?>
 <?php $__env->stopSection(); ?>
 
