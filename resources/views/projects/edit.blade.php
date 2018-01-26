@@ -29,28 +29,37 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="project-name">Name <span class="required">*</span></label>
-                            <input type="text" class="form-control" name="name" id="project-name"
-                                   placeholder="Project name"
-                                   required spellcheck="false" value="{{ $project->name }}"
-                            />
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"></h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="project-name">Name <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="name" id="project-name"
+                                           placeholder="Project name"
+                                           required spellcheck="false" value="{{ $project->name }}"
+                                    />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="project-description">Description</label>
+                                    <textarea class="form-control autosize-target text-left"
+                                              name="description"
+                                              id="project-description"
+                                              placeholder="Project description"
+                                              rows="15"
+                                              spellcheck="false"
+                                              style="resize: vertical"
+                                    >{{{ $project->description }}}</textarea>
+                                    <script>
+                                        CKEDITOR.replace('project-description');
+                                    </script>
+                                </div>
+
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="project-description">Description</label>
-                            <textarea class="form-control autosize-target text-left"
-                                      name="description"
-                                      id="project-description"
-                                      placeholder="Project description"
-                                      rows="5"
-                                      spellcheck="false"
-                                      style="resize: vertical"
-                            >{{{ $project->description }}}</textarea>
-                            <script>
-                                CKEDITOR.replace('project-description');
-                            </script>
-                        </div>
 
 
                     </div>

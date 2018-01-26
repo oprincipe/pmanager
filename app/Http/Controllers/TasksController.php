@@ -235,12 +235,13 @@ class TasksController extends Controller
 
 		    if($task->save()) {
 
-		    	//Send mail to company owner
-			    $owner_mail = $project->company->email;
-			    if(!empty($owner_mail) && env("APP_ENV") !== "local") {
-			    	Mail::to($owner_mail)->send(new TaskStatusChanged($task));
+			    if($request->post("send_email") > 0) {
+				    //Send mail to company owner
+				    $owner_mail = $project->company->email;
+				    if(!empty($owner_mail) && env("APP_ENV") !== "local") {
+					    Mail::to($owner_mail)->send(new TaskStatusChanged($task));
+				    }
 			    }
-
 
 			    return redirect()->route('projects.show', ['project_id' => $task->project_id])
 			                     ->with(array(
