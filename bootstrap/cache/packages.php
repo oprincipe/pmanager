@@ -1,23 +1,9 @@
 <?php return array (
-  'fideloper/proxy' => 
+  'akaunting/money' => 
   array (
     'providers' => 
     array (
-      0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
-    ),
-  ),
-  'laravel/tinker' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Laravel\\Tinker\\TinkerServiceProvider',
-    ),
-  ),
-  'jeroennoten/laravel-adminlte' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'JeroenNoten\\LaravelAdminLte\\ServiceProvider',
+      0 => 'Akaunting\\Money\\Provider',
     ),
   ),
   'barryvdh/laravel-dompdf' => 
@@ -31,6 +17,34 @@
       'PDF' => 'Barryvdh\\DomPDF\\Facade',
     ),
   ),
+  'felixkiss/uniquewith-validator' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Felixkiss\\UniqueWithValidator\\ServiceProvider',
+    ),
+  ),
+  'fideloper/proxy' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
+    ),
+  ),
+  'jeroennoten/laravel-adminlte' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'JeroenNoten\\LaravelAdminLte\\ServiceProvider',
+    ),
+  ),
+  'laravel/tinker' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    ),
+  ),
   'laravelcollective/html' => 
   array (
     'providers' => 
@@ -41,13 +55,6 @@
     array (
       'Form' => 'Collective\\Html\\FormFacade',
       'Html' => 'Collective\\Html\\HtmlFacade',
-    ),
-  ),
-  'felixkiss/uniquewith-validator' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Felixkiss\\UniqueWithValidator\\ServiceProvider',
     ),
   ),
 );

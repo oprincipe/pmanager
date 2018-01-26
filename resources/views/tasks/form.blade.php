@@ -145,19 +145,13 @@
                     <div class="panel-body">
 
                         <div class="form-group">
-                            @if($task->id > 0 && Auth()->user()->role_id !== \App\Role::SUPER_ADMIN)
-                                <label for="task-hours"><i class="fa fa-clock-o"></i> Expected hours <span
-                                            class="required">*</span></label>
-                                <span class="pull-right">{{ $task->hours }}</span>
-                            @else
-                                <label for="task-hours"><i class="fa fa-clock-o"></i> Expected hours <span
-                                            class="required">*</span></label>
-                                <input type="number" class="form-control" name="hours" id="task-hours"
-                                       placeholder="Quote hours to complete"
-                                       required
-                                       spellcheck="false" value="{{ $task->hours }}"
-                                />
-                            @endif
+                            <label for="task-hours"><i class="fa fa-clock-o"></i> Expected hours <span
+                                        class="required">*</span></label>
+                            <input type="number" class="form-control" name="hours" id="task-hours"
+                                   placeholder="Quote hours to complete"
+                                   required
+                                   spellcheck="false" value="{{ $task->hours }}"
+                            />
                         </div>
 
                         <div class="form-group">

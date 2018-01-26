@@ -211,16 +211,27 @@ class TasksController extends Controller
 		    $validatedData) {
 		    $task->fill($request->all());
 
-		    //Convert money
-	        $task_price = $task->price;
-		    $price = new Money($task_price, Currency::EUR(), true);
-
-		    $price_str = str_replace(",",".",$price->formatSimple());
-		    $task->price = $price_str;
-
 		    if(empty($task->user_id)) {
 			    $task->user_id = Auth::user()->id;
 		    }
+
+
+		    /*
+		     * The price could be set by the super admin
+		     */
+		    if(Auth::user()->role_id != Role::SUPER_ADMIN) {
+			    $task->price = $task->getPrice();
+		    }
+		    else {
+			    //Convert money
+			    $task_price = $task->price;
+			    $price = new Money($task_price, Currency::EUR(), true);
+
+			    $price_str = str_replace(",",".",$price->formatSimple());
+			    $task->price = $price_str;
+		    }
+
+
 
 		    if($task->save()) {
 
