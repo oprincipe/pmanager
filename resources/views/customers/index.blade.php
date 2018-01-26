@@ -17,38 +17,37 @@
                 </div>
                 <div class="panel-body">
 
-                    <ul class="list-group">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Customer</th>
+                            <th>Email</th>
+                            <th>Full address</th>
+                            <th>Base price</th>
+                            <th>Phone</th>
+                        </tr>
+                        </thead>
+                        <tbody>
                         @foreach($customers as $customer)
-
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col-xs-1">
-                                        <a href="{{ route("customers.edit", $customer->id) }}"><i
-                                                    class="fa fa-pencil-square-o"></i></a>
-                                    </div>
-
-                                    <div class="col-xs-3">
-                                        <a href="{{ URL::to("/users/".$customer->id) }}">
-                                            {{ $customer->fullName() }}
-                                        </a>
-                                    </div>
-
-                                    <div class="col-xs-3">
-                                        {{ $customer->email }}
-                                    </div>
-
-                                    <div class="col-xs-3">
-                                        {{ $customer->fullAddress() }}
-                                    </div>
-
-                                    <div class="col-xs-2">
-                                        {{ $customer->phone }}
-                                    </div>
-                                </div>
-                            </li>
-
+                        <tr>
+                            <td>
+                                <a href="{{ route("customers.edit", $customer->id) }}"><i
+                                            class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td>
+                                <a href="{{ route("customers.edit", $customer->id) }}">
+                                    {{ $customer->fullName() }}
+                                </a>
+                            </td>
+                            <td>{{ $customer->email }}</td>
+                            <td>{{ $customer->fullAddress() }}</td>
+                            <td>{{ money($customer->base_price, "EUR") }} / h</td>
+                            <td>{{ $customer->phone }}</td>
+                        </tr>
                         @endforeach
-                    </ul>
+                        </tbody>
+                    </table>
 
                 </div>
             </div>

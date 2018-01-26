@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Akaunting\Money\Currency;
+use Akaunting\Money\Money;
 use App\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use function back;
 use function redirect;
 use function route;
+use function str_replace;
 use function view;
 
 class CustomersController extends Controller
@@ -191,10 +194,22 @@ class CustomersController extends Controller
 		    }
 	    }
 
+
 	    $fields = $customer->getFillable();
 	    foreach($fields as $field)
 	    {
-		    $customer->$field = $request->post($field);
+	    	//Convert money
+		    if($field == "base_price") {
+		    	$base_price = $request->post($field);
+		    	$price = new Money($base_price, Currency::EUR(), true);
+
+		    	$price_str = str_replace(",",".",$price->formatSimple());
+			    $customer->$field = $price_str;
+		    }
+			else {
+				$customer->$field = $request->post($field);
+			}
+
 	    }
 
 	    if(!empty($request->post("password"))) {
@@ -209,6 +224,12 @@ class CustomersController extends Controller
 	    if(!$customer->saveOrFail()) {
 		    return back()->withErrors("Errors while saving the customer")->withInput();
 	    }
+
+	    //Check if the user want to update tasks with zero values on prices
+	    if((int) $request->post("base_price_update_ref") === 1) {
+			$customer->updateTaskPricesAndValues();
+	    }
+
 
 	    return redirect(route("customers.index"));
     }

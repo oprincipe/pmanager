@@ -114,8 +114,8 @@
                                                                                 </td>
                                                                                 <td>
                                                                                     {{ $task->hours }}
-                                                                                    @if(!empty($task->days))
-                                                                                        ({{ $task->days }} days)
+                                                                                    @if(!empty($task->hours_real))
+                                                                                        ({{ $task->hours_real }} real)
                                                                                     @endif
                                                                                 </td>
                                                                                 <td>

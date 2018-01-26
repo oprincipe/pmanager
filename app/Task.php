@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use function array_key_exists;
+use function number_format;
 
 class Task extends Model
 {
@@ -13,8 +15,11 @@ class Task extends Model
 		'project_id',
 		'user_id',
 		'company_id',
-		'days',
+		'hours_real',
 		'hours',
+		'price',
+		'value',
+		'value_real'
 	);
 
 
@@ -43,6 +48,19 @@ class Task extends Model
 	public function status()
 	{
 		return $this->belongsTo('App\TaskStatus');
+	}
+
+	public function save(array $options = [])
+	{
+		if(empty($this->hours)) $this->hours = 0;
+		if(empty($this->hours_real)) $this->hours_real = 0;
+
+		if(!array_key_exists("no_calc", $options)) {
+			$this->value      = $this->getQuotedValue();
+			$this->value_real = $this->getRealValue();
+		}
+
+		return parent::save($options);
 	}
 
 	/**
@@ -82,4 +100,53 @@ class Task extends Model
 	{
 		return route('tasks.show', ['task_id' => $this->id]);
 	}
+
+	/**
+	 * If the price is zero it will be set from the base_price taken
+	 * from the first project's customer
+	 */
+	public function getPrice()
+	{
+		if($this->price > 0) {
+			return $this->price;
+		}
+
+		//get the customer
+		$customers = $this->project->customers;
+		if(!empty($customers)) {
+			$customer = $customers->first();
+			return $customer->base_price;
+		}
+	}
+
+
+	/**
+	 * The value is defined with the price and the hours
+	 */
+	public function getQuotedValue()
+	{
+		if($this->value > 0) {
+			return $this->value;
+		}
+
+		$price = $this->getPrice();
+		$hours = ($this->hours > 0) ? $this->hours : 0;
+		$this->value = number_format($price * $hours, 2);
+		return $this->value;
+	}
+
+	/**
+	 * The value is defined with the price and the hours_real
+	 */
+	public function getRealValue()
+	{
+		if($this->value_real > 0) {
+			return $this->value_real;
+		}
+		$price = $this->getPrice();
+		$hours = ($this->hours_real > 0) ? $this->hours_real : 0;
+		$this->value_real = number_format($price * $hours, 2);
+		return $this->value;
+	}
+
 }

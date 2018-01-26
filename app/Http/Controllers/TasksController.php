@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Akaunting\Money\Currency;
+use Akaunting\Money\Money;
 use App\Mail\TaskStatusChanged;
 use App\Project;
+use App\Role;
 use App\Task;
 use App\TaskStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use function back;
+use function env;
 use function redirect;
 use function view;
 
@@ -101,16 +105,33 @@ class TasksController extends Controller
 		    }
 
 			$task->fill($request->all());
-			$task->user_id = Auth::user()->id;
-			if(empty($task->hours)) {
-				$task->hours = 1;
-			}
+
+		    //Fix time and user
+		    $task->user_id = Auth::user()->id;
+		    if(empty($task->hours)) {
+			    $task->hours = 1;
+		    }
+
+		    /*
+		     * The price could be set by the super admin
+		     */
+		    if(Auth::user()->role_id != Role::SUPER_ADMIN) {
+				$task->price = $task->getPrice();
+		    }
+		    else {
+		    	//Price is derived by the owner configurations
+			    //Convert money
+			    $task_price = $task->price;
+			    $price = new Money($task_price, Currency::EUR(), true);
+			    $price_str = str_replace(",",".",$price->formatSimple());
+			    $task->price = $price_str;
+		    }
 
 			if($task->save()) {
 
 				//Send mail to company owner
 				$owner_mail = $project->company->email;
-				if(!empty($owner_mail)) {
+				if(!empty($owner_mail) && env("APP_ENV") !== "local") {
 					Mail::to($owner_mail)->send(new TaskStatusChanged($task, true));
 				}
 
@@ -182,13 +203,21 @@ class TasksController extends Controller
 
 	    //Check permissions
 	    $project = $task->project;
-	    if(Auth::user()->role_id !== 1 && $project->company->user_id !== Auth::user()->id) {
+	    if(Auth::user()->role_id !== Role::SUPER_ADMIN && $project->company->user_id !== Auth::user()->id) {
 		    $this->accessDenied();
 	    }
 
 	    if($task &&
 		    $validatedData) {
 		    $task->fill($request->all());
+
+		    //Convert money
+	        $task_price = $task->price;
+		    $price = new Money($task_price, Currency::EUR(), true);
+
+		    $price_str = str_replace(",",".",$price->formatSimple());
+		    $task->price = $price_str;
+
 		    if(empty($task->user_id)) {
 			    $task->user_id = Auth::user()->id;
 		    }
@@ -197,7 +226,7 @@ class TasksController extends Controller
 
 		    	//Send mail to company owner
 			    $owner_mail = $project->company->email;
-			    if(!empty($owner_mail)) {
+			    if(!empty($owner_mail) && env("APP_ENV") !== "local") {
 			    	Mail::to($owner_mail)->send(new TaskStatusChanged($task));
 			    }
 

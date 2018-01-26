@@ -35,15 +35,21 @@
                                     <b><i class="fa fa-info"></i> Status:</b> {!! $task->status->icon() !!} {{ $task->status->name }}
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <label for="task-hours"><i class="fa fa-user"></i> Expected hours:</label>
+                                    <label for="task-hours"><i class="fa fa-clock-o"></i> Quoted hours:</label>
                                     {{ $task->hours }}
                                 </div>
-                                @if(!empty($task->days))
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <label for="task-days"><i class="fa fa-user"></i> Expected days:</label>
-                                        {{ $task->days }}
-                                    </div>
-                                @endif
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label for="task-hours-real"><i class="fa fa-clock-o"></i> Real hours:</label>
+                                    {{ $task->hours_real }}
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label for="task-value"><i class="fa fa-eur"></i>/<i class="fa fa-clock-o"></i> Quoted value:</label>
+                                    {{ money($task->getQuotedValue()) }}
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label for="task-value"><i class="fa fa-eur"></i>/<i class="fa fa-clock-o"></i> Worked value:</label>
+                                    {{ money($task->getRealValue()) }}
+                                </div>
                             </div>
                         </div>
                     </div>

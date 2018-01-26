@@ -13,8 +13,21 @@ class Project extends Model
 		'description',
 		'company_id',
 		'user_id',
-		'days',
+		'hours',
+		'value'
 	);
+
+	public function save(array $options = [])
+	{
+		$retval = parent::save($options);
+
+		if($retval && $this->id > 0 && ($this->hours <= 0 || $this->value <= 0)) {
+			$this->updateHoursAndValue();
+		}
+
+		return $retval;
+	}
+
 
 	/**
 	 * A project belongs to:
@@ -70,11 +83,15 @@ class Project extends Model
 	{
 		$sql = "SELECT
 				t.`status_id`,
-				t2.name,
-				COUNT(t.hours) AS tot_hours
-				FROM tasks t
+				t2.`name`,
+				    SUM(t.`hours`) AS `tot_hours`,
+				    SUM(t.`hours_real`) AS `tot_hours_real`,
+				    SUM(t.value) AS `tot_values`
+				FROM
+				    `pmanager`.`tasks` t
 				INNER JOIN task_statuses t2 ON t.status_id = t2.id
-				WHERE t.`project_id` = ".$this->id."
+				WHERE
+				t.`project_id` = ".$this->id."
 				GROUP BY t.`status_id`, t2.name";
 		$rs = DB::select($sql);
 		return $rs;
@@ -113,6 +130,16 @@ class Project extends Model
 	public function getContactMail()
 	{
 		return $this->company->getContactMail();
+	}
+
+	public function updateHoursAndValue()
+	{
+		$sql = "UPDATE projects p SET p.`hours` = (SELECT IFNULL(SUM(t.`hours_real`),0) FROM tasks t WHERE t.`project_id` = p.`id`)
+				WHERE p.id = ".$this->id;
+		DB::connection()->getPdo()->exec($sql);
+		$sql = "UPDATE projects p SET p.`value` = (SELECT IFNULL(SUM(t.`value_real`),0) FROM tasks t WHERE t.`project_id` = p.`id`)
+				WHERE p.id = ".$this->id;
+		DB::connection()->getPdo()->exec($sql);
 	}
 
 	public function getViewRoute()

@@ -10,8 +10,11 @@
                     <th>#</th>
                     <th>Status</th>
                     <th>Name</th>
-                    <th>Hours</th>
-                    <th>Creation</th>
+                    <th>Quoted hours</th>
+                    <th>Real hours</th>
+                    <th>Price/hr</th>
+                    <th>Quoted Value</th>
+                    <th>Real Value</th>
                     <th>Last update</th>
                 </tr>
                 </thead>
@@ -64,12 +67,18 @@
                         </td>
                         <td>
                             {{ $task->hours }}
-                            @if(!empty($task->days))
-                                ({{ $task->days }} days)
-                            @endif
                         </td>
                         <td>
-                            {{ $task->created_at->format('d/m/Y H:i:s') }}
+                            {{ 1*$task->hours_real }}
+                        </td>
+                        <td class="text-nowrap">
+                            {{ money($task->getPrice()) }}
+                        </td>
+                        <td class="text-nowrap">
+                            {{ money($task->getQuotedValue()) }}
+                        </td>
+                        <td class="text-nowrap">
+                            {{ money($task->getRealValue()) }}
                         </td>
                         <td>
                             {{ $task->updated_at->format('d/m/Y H:i:s') }}

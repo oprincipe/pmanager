@@ -17,14 +17,18 @@
 
                 <table class="table table-hover">
                     <col width="5%">
-                    <col width="20%">
-                    <col width="55%">
+                    <col width="10%">
+                    <col width="25%">
+                    <col width="25%">
+                    <col width="10%">
                     <col width="20%">
                     <thead>
                     <tr>
                         <th>Actions</th>
                         <th>Company</th>
                         <th>Project</th>
+                        <th>Customers</th>
+                        <th>Value</th>
                         <th>Tasks</th>
                     </tr>
                     </thead>
@@ -39,6 +43,16 @@
                             </td>
                             <td>
                                 <a href="{{ route("projects.show",$project->id) }}">{{ $project->name }}</a>
+                            </td>
+                            <td>
+                                <ul>
+                                @foreach($project->customers as $customer)
+                                    <li class="list-group-item-text">{{ $customer }}</li>
+                                @endforeach
+                                </ul>
+                            </td>
+                            <td>
+                                {{ money($project->value) }}
                             </td>
                             <td>
                                 <table class="table table-condensed table-responsive" style="background-color: transparent;">

@@ -105,7 +105,7 @@
                 </tr>
                 <?php
 	            $hours = 0;
-	            $days = 0;
+	            $hours_real = 0;
                 ?>
                 @foreach($project->tasks($task_status->id) as $task)
                     <tr>
@@ -118,12 +118,12 @@
                         <td class="text-center cell_small">
                             <span>
                                 {{ $task->hours }}
-                                @if(!empty($task->days))
-                                    ({{ $task->days }} days)
+                                @if(!empty($task->hours_real))
+                                    ({{ $task->hours_real }} real hours)
                                 @endif
                                 <?php
-                                $hours += $task->hours;
-                                $days  += $task->days;
+                                $hours += 1*$task->hours;
+                                $hours_real += 1*$task->hours_real;
                                 ?>
                             </span>
                         </td>
@@ -140,8 +140,8 @@
                         <th>Total time</th>
                         <th class="text-center">
                             {{ $hours }}
-                            @if(!empty($days))
-                                - Days: {{ $days }}
+                            @if(!empty($hours_real))
+                                - Real hours: {{ $hours_real }}
                             @endif
                         </th>
                         <th class="text-center"></th>

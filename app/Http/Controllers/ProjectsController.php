@@ -126,6 +126,9 @@ class ProjectsController extends Controller
 	public function show(Project $project)
 	{
 		$project = $project->find($project->id);
+		if($project->id > 0 && ($project->hours <= 0 || $project->value <= 0)) {
+			$project->updateHoursAndValue();
+		}
 		$this->project = $project;
 
 		$task_statuses = TaskStatus::all()->sortBy("position");

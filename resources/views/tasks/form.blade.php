@@ -145,7 +145,7 @@
                     <div class="panel-body">
 
                         <div class="form-group">
-                            @if($task->id > 0 && Auth()->user()->role_id !== 1)
+                            @if($task->id > 0 && Auth()->user()->role_id !== \App\Role::SUPER_ADMIN)
                                 <label for="task-hours"><i class="fa fa-clock-o"></i> Expected hours <span
                                             class="required">*</span></label>
                                 <span class="pull-right">{{ $task->hours }}</span>
@@ -153,7 +153,7 @@
                                 <label for="task-hours"><i class="fa fa-clock-o"></i> Expected hours <span
                                             class="required">*</span></label>
                                 <input type="number" class="form-control" name="hours" id="task-hours"
-                                       placeholder="How many hours you expect to complete this task"
+                                       placeholder="Quote hours to complete"
                                        required
                                        spellcheck="false" value="{{ $task->hours }}"
                                 />
@@ -161,18 +161,33 @@
                         </div>
 
                         <div class="form-group">
-                            @if($task->id > 0 && Auth()->user()->role_id !== 1)
-                                <label for="task-hours"><i class="fa fa-clock-o"></i> Expected days <span
+                            @if(Auth()->user()->role_id !== \App\Role::SUPER_ADMIN)
+                                <label for="task-hours-real"><i class="fa fa-clock-o"></i> Real worked hours <span
                                             class="required">*</span></label>
-                                <span class="pull-right">{{ (int) $task->days }}</span>
+                                <span class="pull-right">{{ (int) $task->hours_real }}</span>
                             @else
-                                <label for="task-days"><i class="fa fa-clock-o"></i> Expected days </label>
-                                <input type="number" class="form-control" name="days" id="task-days"
-                                       placeholder="How many days you expect to complete this task"
-                                       spellcheck="false" value="{{ (int) $task->days }}"
+                                <label for="task-hours-real"><i class="fa fa-clock-o"></i> Real worked hours </label>
+                                <input type="number" class="form-control" name="hours_real" id="task-hours-reals"
+                                       placeholder="How many hours you real take to complete this task"
+                                       spellcheck="false" value="{{ 1*$task->hours_real }}"
                                 />
                             @endif
                         </div>
+
+                        <div class="form-group">
+                            @if(Auth()->user()->role_id !== \App\Role::SUPER_ADMIN)
+                                <label for="task-price"><i class="fa fa-clock-o"></i> Price per hours <span
+                                            class="required">*</span></label>
+                                <span class="pull-right">{{ money($task->getPrice(), "EUR") }}</span>
+                            @else
+                                <label for="task-price"><i class="fa fa-euro"></i>/<i class="fa fa-clock-o"></i> Price per hours </label>
+                                <input type="text" class="form-control" name="price" id="task-price"
+                                       placeholder="Price per hours"
+                                       spellcheck="false" value="{{ money($task->getPrice(), "EUR") }}"
+                                />
+                            @endif
+                        </div>
+
 
                     </div>
                 </div>

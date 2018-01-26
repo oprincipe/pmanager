@@ -142,7 +142,7 @@
                         title="Refresh" onclick="ajax_getProjectTasksByStatus({{ $project->id }}, {{ $task_status->id }})"
                 ><i class="fa fa-refresh"></i></button>
             </span>
-            <span>{{ $task_status->name }}</span>
+            <span>{{ ucfirst($task_status->name) }}</span>
             <span class="badge"><?=(int) $project->tasks_count($task_status->id)?></span>
 
             <span class="pull-right">

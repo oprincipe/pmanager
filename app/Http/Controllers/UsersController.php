@@ -164,6 +164,8 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
+		$u = User::find($user->id);
+
         $validator = $this->validator($request->all(), $user);
         if($validator->fails()) {
         	return back()->withErrors($validator)->withInput();
@@ -172,18 +174,18 @@ class UsersController extends Controller
 	    $fields = ["first_name", "middle_name", "last_name", "email", "city", "role_id"];
         foreach($fields as $field)
         {
-        	$user->$field = $request->post($field);
+        	$u->$field = $request->post($field);
         }
 
         if(!empty($request->post("password"))) {
-        	$user->password = bcrypt($request->post('password'));
+        	$u->password = bcrypt($request->post('password'));
         }
 
-        if(!$user->saveOrFail()) {
+        if(!$u->saveOrFail()) {
         	return back()->withErrors("Errors while updating user")->withInput();
         }
         else {
-        	return back()->with(["success" => "User ".$user->fullName()." updated"]);
+        	return back()->with(["success" => "User ".$u->fullName()." updated"]);
         }
 
     }

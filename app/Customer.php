@@ -29,6 +29,7 @@ class Customer extends Authenticable
 		"mobile",
 		"type",
 		"password",
+		"base_price",
 		"deleted",
 	];
 
@@ -64,6 +65,11 @@ class Customer extends Authenticable
 		return $this->name." ".$this->surname;
 	}
 
+	public function __toString()
+	{
+		return $this->fullName();
+	}
+
 	public function fullAddress()
 	{
 		$address = "";
@@ -76,7 +82,29 @@ class Customer extends Authenticable
 		return trim($address);
 	}
 
+	/**
+	 * Update task values if:
+	 * - the task is related to a project with this customer
+	 * - the customer is the first (or the only one) in the project
+	 * - the task price is empty
+	 */
+	public function updateTaskPricesAndValues()
+	{
+		$projects = $this->projects;
+		foreach($projects as $project)
+		{
+			$tasks = $project->tasks;
+			if(empty($tasks)) continue;
 
+			foreach($tasks as $task)
+			{
+				if($task->price > 0) continue;
+				$task->price = $this->base_price;
+				$task->save();
+			}
+		}
+
+	}
 
 
 }

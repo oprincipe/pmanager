@@ -32,10 +32,10 @@
                         <label for="task-hours"><i class="fa fa-user"></i> Expected hours:</label>
                         {{ $task->hours }}
                     </div>
-                    @if(!empty($task->days))
+                    @if(!empty($task->hours_real))
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <label for="task-days"><i class="fa fa-user"></i> Expected days:</label>
-                            {{ $task->days }}
+                            <label for="task-hours-real"><i class="fa fa-user"></i> Real hours:</label>
+                            {{ $task->hours_real }}
                         </div>
                     @endif
                 </div>

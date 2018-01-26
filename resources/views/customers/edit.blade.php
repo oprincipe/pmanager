@@ -196,6 +196,35 @@
                     </div>
                 </div>
 
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Base price (each hour)</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="form-group has-feedback ">
+                            <input type="text" name="base_price" class="form-control" placeholder="Base price each hour"
+                                   value="{{ money(old("base_price", $customer->base_price), "EUR") }}"
+                            >
+                            <span class="fa fa-euro form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback ">
+                                <input type="checkbox" id="base_price_update_ref" name="base_price_update_ref" class="minimal"
+                                       checked="checked"
+                                       value="1"
+                                >
+                            <label for="base_price_update_ref">
+                            Update tasks with empty price
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Save</button>
+
+                    </div>
+                </div>
+
                 @include("partials.customers.credentials-form")
 
             </div>
