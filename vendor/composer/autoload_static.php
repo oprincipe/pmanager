@@ -463,6 +463,7 @@ class ComposerStaticInit097a2c24b607be7db00611237c36a38b
         'App\\Mail\\CommentStored' => __DIR__ . '/../..' . '/app/Mail/CommentStored.php',
         'App\\Mail\\TaskStatusChanged' => __DIR__ . '/../..' . '/app/Mail/TaskStatusChanged.php',
         'App\\Project' => __DIR__ . '/../..' . '/app/Project.php',
+        'App\\ProjectUser' => __DIR__ . '/../..' . '/app/ProjectUser.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',

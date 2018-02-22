@@ -41,9 +41,14 @@ Route::middleware(['auth'])->group(function() {
 	Route::get('projects/create/{id?}', 'ProjectsController@create');
 	Route::post('projects/get_tasks', 'ProjectsController@ajax_getProjectTasks')->name("projects.get_tasks_by_status");
 	Route::post('projects/change_task_status', 'ProjectsController@ajax_changeTaskStatus')->name("projects.change_task_status");
+	Route::post('projects/add_user/{project_id}', 'ProjectsController@addUser')->name("projects.add_user");
+	Route::get('projects/del_user/{project_id}/{user_id}', 'ProjectsController@delUser')->name("projects.del_user");
 
 	Route::get('tasks/create/{project_id}', 'TasksController@create');
 	//Route::post('tasks/{id}/send', 'TasksEmailController@send');
+	Route::post('tasks/add_user/{task_id}', 'TasksController@addUser')->name("tasks.add_user");
+	Route::get('tasks/del_user/{task_id}/{user_id}', 'TasksController@delUser')->name("tasks.del_user");
+
 
 	Route::get('customerproject/{customer_id}/{project_id}/unlink', 'CustomerProjectController@unlink')->name("customerproject.unlink");
 

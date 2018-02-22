@@ -36,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
 				[
 					'icon'  => 'briefcase',
 					'text'  => 'My projects',
+					'badge' => Auth::user()->assigned_projects()->count(),
 					'url'   => route('projects.index')
 				]
 			);

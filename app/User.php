@@ -39,10 +39,15 @@ class User extends Authenticatable
     	return $this->first_name." ".$this->last_name;
     }
 
-    /*
-     * User can has many:
-     * - companies
-     */
+    public function __toString()
+    {
+	    return $this->fullName();
+    }
+
+	/*
+	 * User can has many:
+	 * - companies
+	 */
 	public function companies()
 	{
 		return $this->hasMany('App\Company');
@@ -75,6 +80,17 @@ class User extends Authenticatable
 	{
 		return $this->belongsToMany("App\Project");
 	}
+
+	public function assigned_projects()
+    {
+        return \App\Project::where("user_id", $this->id)
+            ->whereIn("id", function ($query) {
+                $query->select("project_id")
+                    ->from("project_user")
+                    ->where("user_id", $this->id);
+            }, "or");
+    }
+
 
 
 	public function comments()

@@ -15,21 +15,6 @@
                             <h3 class="panel-title">Create a new project</h3>
                         </div>
                         <div class="panel-body">
-                            @if (!is_null($company_id))
-                                <input type="hidden" class="form-control" name="company_id" id="company-id"
-                                       value="{{ $company_id }}"
-                                />
-                            @else
-                                <div class="form-group">
-                                    <label for="company-id">Select the company <span class="required">*</span></label>
-                                    <select class="form-control" name="company_id" id="company_id">
-                                        @foreach($companies as $company)
-                                            <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            @endif
-
                             <div class="form-group">
                                 <label for="project-name">Name <span class="required">*</span></label>
                                 <input type="text" class="form-control" name="name" id="project-name" placeholder="Project name"

@@ -50,6 +50,7 @@ return array(
     'App\\Mail\\CommentStored' => $baseDir . '/app/Mail/CommentStored.php',
     'App\\Mail\\TaskStatusChanged' => $baseDir . '/app/Mail/TaskStatusChanged.php',
     'App\\Project' => $baseDir . '/app/Project.php',
+    'App\\ProjectUser' => $baseDir . '/app/ProjectUser.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',
     'App\\Providers\\BroadcastServiceProvider' => $baseDir . '/app/Providers/BroadcastServiceProvider.php',

@@ -13,7 +13,6 @@
 
         <form action="{{ $form_method }}" method="post" role="form">
             {{ csrf_field() }}
-            <input type="hidden" name="company_id" id="company_id" value="{{ $task->company_id }}" />
             <input type="hidden" name="project_id" id="project_id" value="{{ $task->project_id }}" />
 
             <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
@@ -124,10 +123,6 @@
                                 <li><a href="{{ route('tasks.show', $task->id) }}"><i class="fa fa-tasks"></i> View task</a>
                                 </li>
                             @endif
-                            <li><a href="{{ URL::to('/companies/'.$task->company_id) }}"><i class="fa fa-building"></i>
-                                    View
-                                    company</a>
-                            </li>
                             <li><a href="{{ URL::to('/projects/'.$task->project_id) }}"><i class="fa fa-briefcase"></i>
                                     View
                                     project</a>

@@ -35,6 +35,23 @@
                             </div>
                             <div class="panel-body">
                                 <div class="form-group">
+                                    <label for="project-user-id">Owner <span class="required">*</span></label>
+                                    @if(Auth::user()->role_id == App\Role::SUPER_ADMIN)
+                                        <select class="form-control" name="user_id" id="user_id">
+                                            @foreach($users as $owner)
+                                                <option value="{{ $owner->id }}"
+                                                        @if($owner->id == $project->user_id)
+                                                        selected="selected"
+                                                        @endif
+                                                >{{ $owner->fullName() }}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        {{ $project->user->fullName() }}
+                                    @endif
+                                </div>
+
+                                <div class="form-group">
                                     <label for="project-name">Name <span class="required">*</span></label>
                                     <input type="text" class="form-control" name="name" id="project-name"
                                            placeholder="Project name"
@@ -51,7 +68,7 @@
                                               rows="15"
                                               spellcheck="false"
                                               style="resize: vertical"
-                                    >{{{ $project->description }}}</textarea>
+                                    >{!! $project->description  !!}</textarea>
                                     <script>
                                         CKEDITOR.replace('project-description');
                                     </script>
@@ -76,10 +93,6 @@
                     <ol class="list-unstyled">
                         <li><a href="{{ URL::to('/projects/'.$project->id) }}"><i class="fa fa-briefcase"></i> View
                                                                                                                project</a>
-                        </li>
-                        <li><a href="{{ URL::to('/companies/'.$project->company->id) }}"><i class="fa fa-building"></i>
-                                View company</a></li>
-                        <li><a href="{{ URL::to('/companies/') }}"><i class="fa fa-building-o"></i> All companies</a>
                         </li>
                     </ol>
                     </div>

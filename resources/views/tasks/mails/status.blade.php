@@ -1,6 +1,6 @@
 @component('mail::message')
 
-<h5>{{ $task->project->company->name }} - {{ $task->project->name }}</h5>
+<h5>{{ $task->project->name }}</h5>
 #{{ $task->name }}
 
 #{{ $task_title }}

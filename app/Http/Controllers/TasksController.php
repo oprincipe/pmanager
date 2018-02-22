@@ -4,16 +4,15 @@ namespace App\Http\Controllers;
 
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money;
-use App\Mail\TaskStatusChanged;
 use App\Project;
 use App\Role;
 use App\Task;
 use App\TaskStatus;
+use App\TaskUser;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use function back;
-use function env;
 use function redirect;
 use function view;
 
@@ -55,23 +54,24 @@ class TasksController extends Controller
     public function create($project_id = null)
     {
     	if(empty($project_id)) {
-    		return back()->withInput()->withErrors(['Company must be selected','Project must be selected']);
+    		return back()->withInput()->withErrors(['Project must be selected']);
 	    }
 
 	    $project = Project::find($project_id);
-	    if(!$project) {
+	    if(false) $project = new Project();
+
+    	if(!$project) {
 		    return back()->withInput()->withErrors(['Project task not found']);
 	    }
 
 	    //Check permissions
-	    if(Auth::user()->role_id !== 1 && $project->company->user_id !== Auth::user()->id) {
+	    if(!$project->userCanView(Auth::user())) {
 	    	$this->accessDenied();
 	    }
 
 	    $task_statuses = TaskStatus::all();
 	    $task = new Task();
         $task->project_id = $project->id;
-        $task->company_id = $project->company_id;
 
     	return view("tasks.form", ['task' => $task, 'task_statuses' => $task_statuses]);
     }
@@ -82,13 +82,14 @@ class TasksController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     *
+     * @todo Send mail to customers and/or task/project workers
      */
     public function store(Request $request)
     {
 
 	    $validatedData = $request->validate(
 	    	[
-			    'company_id' => 'exists:companies,id',
 			    'project_id' => 'exists:projects,id',
 			    'name' => 'required|max:191',
                 'hours' => 'required|integer|min:1',
@@ -100,7 +101,8 @@ class TasksController extends Controller
 
 		    //Check permissions
 		    $project = Project::find($request->post("project_id"));
-		    if(Auth::user()->role_id !== 1 && $project->company->user_id !== Auth::user()->id) {
+		    if(false) $project = new Project();
+		    if(!$project->userCanView(Auth::user())) {
 			    $this->accessDenied();
 		    }
 
@@ -130,10 +132,11 @@ class TasksController extends Controller
 			if($task->save()) {
 
 				//Send mail to company owner
-				$owner_mail = $project->company->email;
+				/*$owner_mail = $project->company->email;
 				if(!empty($owner_mail) && env("APP_ENV") !== "local") {
 					Mail::to($owner_mail)->send(new TaskStatusChanged($task, true));
 				}
+				*/
 
 				return redirect()->route('projects.show', ['project_id' => $task->project_id])
 					->with('success', 'Task created successfully');
@@ -188,12 +191,13 @@ class TasksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
+     *
+     * @todo Send mail to customers and/or task/project workers
      */
     public function update(Request $request, Task $task)
     {
 	    $validatedData = $request->validate(
 		    [
-			    'company_id' => 'exists:companies,id',
 			    'project_id' => 'exists:projects,id',
 			    'name' => 'required|max:191',
 			    'hours' => 'required|integer|min:1',
@@ -203,7 +207,8 @@ class TasksController extends Controller
 
 	    //Check permissions
 	    $project = $task->project;
-	    if(Auth::user()->role_id !== Role::SUPER_ADMIN && $project->company->user_id !== Auth::user()->id) {
+	    if(false) $project = new Project();
+	    if(!$project->userCanView(Auth::user())) {
 		    $this->accessDenied();
 	    }
 
@@ -235,6 +240,7 @@ class TasksController extends Controller
 
 		    if($task->save()) {
 
+		        /*
 			    if($request->post("send_email") > 0) {
 				    //Send mail to company owner
 				    $owner_mail = $project->company->email;
@@ -242,6 +248,7 @@ class TasksController extends Controller
 					    Mail::to($owner_mail)->send(new TaskStatusChanged($task));
 				    }
 			    }
+		        */
 
 			    return redirect()->route('projects.show', ['project_id' => $task->project_id])
 			                     ->with(array(
@@ -266,4 +273,109 @@ class TasksController extends Controller
     {
         //
     }
+
+
+
+	/**
+	 * Add a user identified by mail to the project.
+	 * This operation could by done by the owner of the
+	 * project
+	 *
+	 * @param int $project
+	 * @param Request $request
+	 */
+	public function addUser($task_id, Request $request)
+	{
+		$user_email = $request->post("worker_user_email");
+
+		$task = Task::find($task_id);
+		if(!$task) {
+			return back()->withInput()->withErrors("Task not founds");
+		}
+
+		//Check permissions
+		if(false) $task = new Project();
+		if(!$task->userCanAddUser(Auth::user())) {
+			return back()->withInput()->withErrors("Operation not allowed. Only the project owner can add workers");
+		}
+
+		//Load the user by mail
+		$user = User::where("email", $user_email)->first();
+		if(!$user || empty($user->id)) {
+			return back()->withInput()->withErrors("User email $user_email not founds");
+		}
+
+		//Check if the user is the owner
+		if($user->id == $task->user_id) {
+			return back()->withInput()->withErrors("You are the owner of this task, what else?");
+		}
+
+		//Check if this user is already assigned
+		$user_task = $task->users()->where("email", $user_email)->first();
+		if(!empty($user_task->id)) {
+			return back()->withInput()->withErrors("User email $user_email already assigned to this project");
+		}
+
+		//All good, insert ...
+		$task_user = new TaskUser();
+		$task_user->task_id = $task->id;
+		$task_user->user_id = $user->id;
+		$task_user->saveOrFail();
+
+		return back()->with("success", "User worker added to task");
+	}
+
+
+	/**
+	 * This function will delete a user from the list of workers
+	 * of this task
+	 */
+	public function delUser($task_id, $user_id)
+	{
+		$user_id = (int) $user_id;
+		$task = Task::find($task_id);
+		if(!$task) {
+			return back()->withInput()->withErrors("Task not founds");
+		}
+
+		//Check permissions
+		if(false) $task = new Task();
+		if($user_id !== Auth::user()->id && !$task->userCanDelUser(Auth::user())) {
+			return back()->withInput()->withErrors("Operation not allowed. Only the task owner can delete workers or you could delete yourself");
+		}
+
+		//Load the user by mail
+		$user = User::find($user_id);
+		if(!$user || empty($user->id)) {
+			return back()->withInput()->withErrors("User not founds");
+		}
+
+		//Check if the user is the owner
+		if($user->id == $task->user_id) {
+			return back()->withInput()->withErrors("The owner of the task can't be removed");
+		}
+
+		//Check if this user is already assigned
+		$user_task = $task->users()->where("user_id", $user_id)->first();
+		if(empty($user_task->id)) {
+			return back()->withInput()->withErrors("This user is not assigned to this task");
+		}
+
+		//All good, insert ...
+		$task_user = ProjectUser::where(
+			[
+				"task_id" => $task->id,
+				"user_id" => $user->id
+			])->first();
+		$task_user->delete();
+
+		if($user_id === Auth::user()->id) {
+			return redirect(route("projects.index"))->with("success", "User removed from task");
+		}
+
+		return back()->with("success", "User worker removed from task");
+
+	}
+
+
 }

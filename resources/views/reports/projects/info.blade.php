@@ -17,9 +17,6 @@
         }
     </style>
 
-    <h2>{{ $company->name }}</h2>
-    {{-- <small><pre>{{ $company->description }}</pre></small> --}}
-
 
     <table cellspacing="0" cellpadding="2" style="width: 100%">
         <tr class="valign-top">

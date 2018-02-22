@@ -131,6 +131,9 @@ class CustomersController extends Controller
 	    {
 		    $customer->$field = $request->post($field);
 	    }
+		if(empty($customer->base_price)) {
+			$customer->base_price = 0;
+		}
 
 	    if(!empty($request->post("password"))) {
 		    $customer->password = bcrypt($request->post('password'));
@@ -211,6 +214,10 @@ class CustomersController extends Controller
 			}
 
 	    }
+
+        if(empty($customer->base_price)) {
+            $customer->base_price = 0;
+        }
 
 	    if(!empty($request->post("password"))) {
 		    $customer->password = bcrypt($request->post('password'));
