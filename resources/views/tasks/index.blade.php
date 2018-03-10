@@ -71,7 +71,9 @@
                                     <label title="{{ $task->status->name }}">{!! $task->status->icon() !!}</label>
                                 </td>
                                 <td style="white-space: normal">
-                                    {!! $task->name !!}
+                                    {{ $task->name }}
+                                    <br />
+                                    <em>__("Project") {{ $task->project->name }}</em>
                                 </td>
                                 <td>
                                     {{ $task->hours }}
