@@ -73,7 +73,7 @@
                                 <td style="white-space: normal">
                                     {{ $task->name }}
                                     <br />
-                                    <em>__("Project") {{ $task->project->name }}</em>
+                                    <em>{{ __("Project") }} {{ $task->project->name }}</em>
                                 </td>
                                 <td>
                                     {{ $task->hours }}
