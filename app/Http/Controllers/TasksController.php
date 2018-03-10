@@ -41,8 +41,19 @@ class TasksController extends Controller
      */
     public function index()
     {
-        //Non c'è un indice per i task, redirect a companies
-	    return redirect()->route('companies.index');
+        $user = Auth::user();
+        $task_statuses = TaskStatus::all();
+
+        $tasks = $user->assigned_tasks();
+        Task::processFilterCollection($tasks);
+        $tasks->paginate(10);
+
+        $data = array(
+            "tasks" => $tasks->get(),
+            'task_statuses' => $task_statuses,
+        );
+
+        return view("tasks.index", $data);
     }
 
     /**

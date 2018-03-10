@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -89,6 +90,43 @@ class User extends Authenticatable
                     ->from("project_user")
                     ->where("user_id", $this->id);
             }, "or");
+    }
+
+    /**
+     * @return array \App\Task
+     */
+    public function assigned_tasks(array $task_status_ids = null, $group_by = false)
+    {
+        if(empty($task_status_ids)) {
+            //$where_ids = " (".implode(",", $task_status_ids).") ";
+            $task_status_ids = TaskStatus::getIds();
+        }
+
+        if($group_by) {
+            return \App\Task::where("user_id", $this->id)
+                ->where(function($query) use ($task_status_ids) {
+                    $query->whereIn("status_id", $task_status_ids)
+                        ->whereIn("id", function ($query) {
+                            $query->select("project_id")
+                                ->from("task_user")
+                                ->where("user_id", $this->id);
+                        }, "or");
+                })
+                ->groupBy("status_id")
+                ->get(['*', DB::raw('count(tasks.id) as totals')]);
+        }
+        else {
+            return \App\Task::where("user_id", $this->id)
+                ->where(function($query) use ($task_status_ids) {
+                    $query->whereIn("status_id", $task_status_ids)
+                        ->whereIn("id", function ($query) {
+                            $query->select("project_id")
+                                ->from("task_user")
+                                ->where("user_id", $this->id);
+                        }, "or");
+                });
+
+        }
     }
 
 

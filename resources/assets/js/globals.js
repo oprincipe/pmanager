@@ -22,6 +22,19 @@ $(function() {
             }
 
         });
+
+        $(".select2").select2({
+            escapeMarkup: function(markup) {
+                return markup;
+            },
+            templateResult: function(data) {
+                return data.html;
+            },
+            templateSelection: function(data) {
+                return data.text;
+            }
+        });
+
     });
 
 

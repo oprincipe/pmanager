@@ -2,7 +2,9 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Input;
 use function number_format;
 
 class Task extends Model
@@ -142,6 +144,30 @@ class Task extends Model
 		$this->value_real = number_format($price * $hours, 2);
 		return $this->value;
 	}
+
+
+    /**
+     * Process filters collection after running a search form
+     * @param Collection $tasks
+     * @return bool
+     */
+	public static function processFilterCollection(&$tasks)
+    {
+        if(Input::has("search_task_name")) {
+            $tasks->where("name", "like", "%".Input::get("search_task_name")."%");
+        }
+        if(Input::has("search_task_status_id")) {
+            if(Input::get("search_task_status_id") == "actives") {
+                $tasks->whereIn("status_id", TaskStatus::getActiveIds());
+            }
+            else {
+                $tasks->where("status_id", (int) Input::get("search_task_status_id"));
+            }
+        }
+
+        return true;
+    }
+
 
 
 	/**

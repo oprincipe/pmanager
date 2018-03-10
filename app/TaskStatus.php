@@ -15,6 +15,25 @@ class TaskStatus extends Model
 		'name'
     );
 
+
+    public static function getIds()
+    {
+        return [
+            self::STATUS_STAND_BY,
+            self::STATUS_WAITING,
+            self::STATUS_WORKING,
+            self::STATUS_CLOSED,
+        ];
+    }
+
+    public static function getActiveIds()
+    {
+        return [
+            self::STATUS_STAND_BY,
+            self::STATUS_WORKING
+        ];
+    }
+
 	/**
 	 * Status could be found on many tasks
 	 *

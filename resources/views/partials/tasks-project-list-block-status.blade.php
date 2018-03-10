@@ -40,7 +40,7 @@
                             ><i class="fa fa-pencil"></i>
                             </a>
 
-                            @if (Auth::user()->role_id == 1)
+                            @if ($task->userCanDelUser(Auth::user()))
                                 <a href="#"
                                    onclick="
                                            var result = confirm('Are you sure you wish to delete this task?');
