@@ -156,7 +156,8 @@ class Task extends Model
         if(Input::has("search_task_name")) {
             $tasks->where("name", "like", "%".Input::get("search_task_name")."%");
         }
-        if(Input::has("search_task_status_id")) {
+
+        if(!empty(Input::get("search_task_status_id"))) {
             if(Input::get("search_task_status_id") == "actives") {
                 $tasks->whereIn("status_id", TaskStatus::getActiveIds());
             }
