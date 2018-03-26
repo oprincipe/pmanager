@@ -51,6 +51,9 @@ class ProjectsController extends Controller
 			"projects" => $projects,
 			'task_statuses' => $task_statuses,
 		);
+
+
+
 		return view("projects.index", $data);
 	}
 

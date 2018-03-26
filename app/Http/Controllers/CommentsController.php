@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\Mail\CommentStored;
-use function explode;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use function explode;
 use function last;
 use function redirect;
 use function str_plural;
@@ -44,6 +44,7 @@ class CommentsController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * A new mail will be send to owner and relate users
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -61,18 +62,47 @@ class CommentsController extends Controller
 
 	    if($comment) {
 
-		    //Send mail to company owner
+            //Collect mails
+            $mail_list = [];
+
+            $mail_sent = " - mail sent to related users";
+
+            //Send mail
 		    if(false) $comment = new Comment();
 		    $commentable = $comment->commentable;
-		    $owner_mail = $commentable->getContactMail();
 
-		    $mail_sent = "";
-		    if(!empty($owner_mail)) {
-			    Mail::to($owner_mail)->send(new CommentStored($comment));
-			    $mail_sent = " - mail sent to company's owner";
-		    }
+		    //Send mail to the owner
+            $owner = $commentable->owner;
+		    if(!empty($owner->email)) {
+                $mail_list[$owner->email] = $owner->email;
+            }
 
-		    return back()->with("success", "Comment added successfully".$mail_sent);
+            //Send mail to inherit users
+            $users = $commentable->getUsersFromParentObjects();
+            foreach($users as $user)
+            {
+                if(!empty($user->email)) {
+                    $mail_list[$user->email] = $user->email;
+                }
+            }
+
+            //Send mail to direct users
+            $users = $commentable->users;
+            foreach($users as $user)
+            {
+                if(!empty($user->email)) {
+                    $mail_list[$user->email] = $user->email;
+                }
+            }
+
+            //Send mail to everybody
+            foreach($mail_list as $mail_addr)
+            {
+                Mail::to($mail_addr)->send(new CommentStored($comment));
+            }
+
+
+            return back()->with("success", "Comment added successfully".$mail_sent);
 	    }
 
         return back()->withInput()->with("error", "Errors while creating comment");

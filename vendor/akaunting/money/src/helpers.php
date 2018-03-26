@@ -13,7 +13,7 @@ if (!function_exists('money')) {
      *
      * @return \Akaunting\Money\Money
      */
-    function money($amount, $currency = 'EUR', $convert = false)
+    function money($amount, $currency = 'USD', $convert = false)
     {
         return new Money($amount, currency($currency), $convert);
     }

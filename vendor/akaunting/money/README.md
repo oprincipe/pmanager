@@ -8,10 +8,6 @@
 
 This package intends to provide tools for formatting and conversion monetary values in an easy, yet powerful way for Laravel projects.
 
-### Why not use the moneyphp package?
-
-Because `moneyphp` uses the `intl` extension for number formatting. `intl` extension isn't present by default on PHP installs and can give [different results](http://moneyphp.org/en/latest/features/formatting.html#intl-formatter) in different servers.
-
 ## Getting Started
 
 ### 1. Install

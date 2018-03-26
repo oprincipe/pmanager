@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ModifyHeadersMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -19,6 +20,8 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
+        //\Barryvdh\Cors\HandleCors::class,
+        ModifyHeadersMiddleware::class
     ];
 
     /**
@@ -39,7 +42,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             'throttle:60,1',
-            'bindings',
+            'bindings'
         ],
     ];
 
@@ -58,6 +61,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'auth.superadmin' => \App\Http\Middleware\AuthSuperAdmin::class,
-        'auth.company-owner' => \App\Http\Middleware\AuthCompanyOwner::class,
+        'auth.company-owner' => \App\Http\Middleware\AuthCompanyOwner::class
     ];
 }

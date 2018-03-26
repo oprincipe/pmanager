@@ -59,7 +59,7 @@ Route::middleware(['auth'])->group(function() {
 });
 
 
-Auth::routes();
+//Auth::routes();
 
 //Customers login
 Route::prefix("customer")->group(function() {

@@ -6,7 +6,6 @@ use App\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class TaskStatusChanged extends Mailable
 {
@@ -20,17 +19,17 @@ class TaskStatusChanged extends Mailable
 	/**
 	 * @var bool Task is new o updated
 	 */
-	public $new;
+	public $task_status_text;
 
 	/**
 	 * Create a new message instance.
 	 *
 	 * @return void
 	 */
-	public function __construct(Task $task, $new = false)
+	public function __construct(Task $task, $task_status_text = "")
 	{
 		$this->task = $task;
-		$this->new = $new;
+		$this->task_status_text = (empty($task_status_text)) ? __("task") : $task_status_text;
 	}
 
 	/**
@@ -43,10 +42,10 @@ class TaskStatusChanged extends Mailable
 
 		$view_url = route('tasks.show', ['task_id' => $this->task->id]);
 
-		$title = $this->new ? "New task created" : "Task updated";
+		$title = $this->task_status_text;
 		return $this->subject($title)
-					->from("orazio.principe@programmatoriphp.it")
-					->bcc("principe.sviluppo@gmail.com")
+					->from("noreply@programmatoriphp.it")
+					//->bcc("principe.sviluppo@gmail.com")
 		            ->markdown("tasks.mails.status")
 			        ->with([
 			        	'task_title' => $title,

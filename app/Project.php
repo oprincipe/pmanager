@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class Project extends Model
 {
+    use UserRelations, UserCanPermissions;
 
 	protected $fillable = array(
 		'name',
@@ -16,7 +17,14 @@ class Project extends Model
 		'value'
 	);
 
-	public function save(array $options = [])
+
+	public function getUsersFromParentObjects()
+    {
+        return [];
+    }
+
+
+    public function save(array $options = [])
 	{
 		$retval = parent::save($options);
 
@@ -25,64 +33,6 @@ class Project extends Model
 		}
 
 		return $retval;
-	}
-
-
-	/**
-	 * A project belongs to:
-	 * - user (many)
-	 */
-	public function user()
-	{
-		return $this->belongsTo('App\User');
-	}
-
-	/**
-	 * @see user()
-	 */
-	public function owner()
-	{
-		return $this->user();
-	}
-
-	/**
-	 * @param int $user_id
-	 *
-	 * @return bool
-	 */
-	public function isOwner(int $user_id)
-	{
-		return $this->user_id === $user_id;
-	}
-
-
-	/**
-	 * Return the list of Users related to ProjectUsers
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-	 */
-	public function users()
-	{
-		return $this->belongsToMany("App\User");
-	}
-
-
-
-	public function userCanView(User $user)
-	{
-		//Return true if is the owner
-		if($this->user_id == $user->id) return true;
-
-		/**
-		 * Return true if the user is inside the users
-		 * list
-		 */
-		$worker = $this->users()->where("user_id", $user->id)->first();
-		if($worker) {
-			return true;
-		}
-
-		return false;
 	}
 
 
@@ -107,7 +57,6 @@ class Project extends Model
 		if($this->user_id == $user->id) return true;
 		return false;
 	}
-
 
 
 	/**

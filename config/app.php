@@ -193,6 +193,10 @@ return [
          */
         Felixkiss\UniqueWithValidator\ServiceProvider::class,
 
+        /*
+         * Laravel Passport OAuth
+         */
+        Laravel\Passport\PassportServiceProvider::class,
 
     ],
 

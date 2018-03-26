@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money;
+use App\Mail\TaskStatusChanged;
 use App\Project;
 use App\Role;
 use App\Task;
@@ -12,6 +13,7 @@ use App\TaskUser;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use function back;
 use function redirect;
 use function view;
@@ -34,6 +36,47 @@ class TasksController extends Controller
 	}
 
 
+	private function sendMails(Task $task, $task_status_text
+    )
+    {
+        //Collect mails
+        $mail_list = [];
+
+
+        //Send mail to related users and owner
+        $owner = $task->owner;
+        if(!empty($owner->email)) {
+            $mail_list[$owner->email] = $owner->email;
+        }
+
+        //Get whole project workers
+        $related_users = $task->getUsersFromParentObjects();
+        foreach($related_users as $user)
+        {
+            if(!empty($user->email)) {
+                $mail_list[$user->email] = $user->email;
+            }
+        }
+
+        //Get task workers
+        $users = $task->users;
+        foreach($users as $user)
+        {
+            if(!empty($user->email)) {
+                $mail_list[$user->email] = $user->email;
+            }
+        }
+
+        //Send mail to everybody
+        foreach($mail_list as $mail_addr)
+        {
+            Mail::to($mail_addr)->send(new TaskStatusChanged($task, $task_status_text));
+        }
+
+        return true;
+    }
+
+
 	/**
      * Display a listing of the resource.
      *
@@ -46,10 +89,10 @@ class TasksController extends Controller
 
         $tasks = $user->assigned_tasks();
         Task::processFilterCollection($tasks);
-        $tasks->paginate(10);
+        $tasks = $tasks->paginate(10);
 
         $data = array(
-            "tasks" => $tasks->get(),
+            "tasks" => $tasks,
             'task_statuses' => $task_statuses,
         );
 
@@ -142,14 +185,10 @@ class TasksController extends Controller
 
 			if($task->save()) {
 
-				//Send mail to company owner
-				/*$owner_mail = $project->company->email;
-				if(!empty($owner_mail) && env("APP_ENV") !== "local") {
-					Mail::to($owner_mail)->send(new TaskStatusChanged($task, true));
-				}
-				*/
+                //Send mail to users
+                $this->sendMails($task, __("New task created"));
 
-				return redirect()->route('projects.show', ['project_id' => $task->project_id])
+                return redirect()->route('projects.show', ['project_id' => $task->project_id])
 					->with('success', 'Task created successfully');
 			}
 		}
@@ -251,15 +290,10 @@ class TasksController extends Controller
 
 		    if($task->save()) {
 
-		        /*
 			    if($request->post("send_email") > 0) {
-				    //Send mail to company owner
-				    $owner_mail = $project->company->email;
-				    if(!empty($owner_mail) && env("APP_ENV") !== "local") {
-					    Mail::to($owner_mail)->send(new TaskStatusChanged($task));
-				    }
+				    //Send mail to users
+                    $this->sendMails($task, __("Task updated"));
 			    }
-		        */
 
 			    return redirect()->route('projects.show', ['project_id' => $task->project_id])
 			                     ->with(array(
@@ -282,7 +316,19 @@ class TasksController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        //Check permissions
+        if(!$task->userCanDelete(Auth::user())) {
+            $this->accessDenied();
+        }
+
+        $this->sendMails($task,__("Task deleted"));
+        $task->delete();
+
+        return redirect()->route("projects.show", ['project_id' => $task->project_id])
+                                ->with(array(
+                                'success' => 'Task deleted successfully',
+                                'selected_status'  => TaskStatus::STATUS_STAND_BY
+                            ));
     }
 
 

@@ -107,6 +107,23 @@
                                             <span class="label label-default">{!! $del_link !!} {{ $worker }}</span>
                                         @endforeach
                                     </div>
+
+                                    @if(!empty($task->getUsersFromParentObjects()))
+                                        <br />
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title">{{ __("Global workers") }}</h3>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="col-lg-12 tagcloud">
+                                                    @foreach($task->getUsersFromParentObjects() as $worker)
+                                                        <span class="label label-default">{{ $worker }}</span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                 </div>
                             </div>
                         </div>

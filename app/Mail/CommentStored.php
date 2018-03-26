@@ -6,7 +6,6 @@ use App\Comment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class CommentStored extends Mailable
 {
@@ -42,8 +41,8 @@ class CommentStored extends Mailable
 
         $title = "New comment";
 	    return $this->subject($title)
-	                ->from("orazio.principe@programmatoriphp.it")
-	                ->bcc("principe.sviluppo@gmail.com")
+	                ->from("noreply@programmatoriphp.it")
+	                //->bcc("principe.sviluppo@gmail.com")
 	                ->markdown("comments.mails.stored")
 	                ->with([
 		                       'task_title' => $title,

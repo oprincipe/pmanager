@@ -100,12 +100,7 @@
 
             </div>
             <div class="panel-footer">
-                <?php
-                try {
-                    $tasks->links();
-                }
-                catch (Exception $e) {}
-                ?>
+                {{ $tasks->links() }}
             </div>
         </div>
     </div>

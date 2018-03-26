@@ -57,8 +57,6 @@
                 <div class="navbar-custom-menu">
 
                     <ul class="nav navbar-nav">
-                        @section('navbar_elements')
-                        @stop
                         <li>
                             @if(config('adminlte.logout_method') == 'GET' || !config('adminlte.logout_method') && version_compare(\Illuminate\Foundation\Application::VERSION, '5.3.0', '<'))
                                 <a href="{{ url(config('adminlte.logout_url', 'auth/logout')) }}">
