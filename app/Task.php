@@ -4,32 +4,108 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use function array_key_exists;
 use function number_format;
 
-class Task extends Model
+class Task extends Model implements Monetizable
 {
-    use UserRelations, UserCanPermissions;
+    use UserRelations, UserCanPermissions, MonetizableTrait;
 
     protected $fillable = array(
 		'name',
-		'description',
 		'status_id',
 		'project_id',
-		'user_id',
-		'hours_real',
+        'user_id',
+        'hours_real',
 		'hours',
 		'price',
 		'value',
 		'value_real'
 	);
 
+
     /**
-     * @inheritDoc
+     * Preloaded and in memory objects.
+     * This is to prevent overloading system and keep in memory
+     * changes upon saving operations
+     *
+     * @var TaskUser[]
      */
-    public function getUsersFromParentObjects()
+    protected $taskUsers = array();
+
+
+    public function getMoneyFields()
     {
-        return $this->project->users;
+        return [
+            'status_id' => 'setStatusId',
+            'hours_real' => 'setHoursReal',
+            'hours' => 'setHours',
+            'price' => 'setPrice',
+        ];
+    }
+
+    public function isMoneyField($fieldName)
+    {
+        return array_key_exists($fieldName, $this->getMoneyFields());
+    }
+
+
+    /**
+     * Get the related owner if not the main task user
+     */
+    public function owner()
+    {
+        if($this->isOwner(Auth::id())) {
+            return $this->user;
+        }
+        else {
+            return $this->getTaskUser(Auth::user())->owner();
+        }
+    }
+
+
+    /**
+     * The task related to the logged user
+     *
+     * @return Task|TaskUser
+     */
+    public function getTaskUser(User $_worker = null)
+    {
+        if(!empty($worker) && $this->isOwner(Auth::id())) {
+            return $this;
+        }
+        else {
+            $worker = (empty($_worker)) ? Auth::user() : $_worker;
+
+            //Check in memory object
+            if(!array_key_exists($worker->id, $this->taskUsers)) {
+                $tu = TaskUser::where("user_id", $worker->id)
+                    ->where("task_id", $this->id)
+                    ->first();
+                if(!$tu) {
+                    //No task defined to this user, creating new one
+                    $tu = new TaskUser();
+                    $tu->user_id = $worker->id;
+                    $tu->task_id = $this->id;
+                }
+
+                $this->taskUsers[$worker->id] = $tu;
+            }
+
+            return $this->taskUsers[$worker->id];
+        }
+    }
+
+
+    /**
+     * Get the description from related table
+     * @return TaskDescription
+     */
+    public function description()
+    {
+        return $this->hasOne("App\TaskDescription");
     }
 
 
@@ -40,18 +116,28 @@ class Task extends Model
 
 	public function status()
 	{
-		return $this->belongsTo('App\TaskStatus');
+        if($this->isOwner(Auth::id())) {
+            return $this->belongsTo('App\TaskStatus');
+        }
+        else {
+            return $this->getTaskUser()->status();
+        }
 	}
 
 	public function save(array $options = [])
 	{
-		if(empty($this->hours)) $this->hours = 0;
-		if(empty($this->hours_real)) $this->hours_real = 0;
+	    if($this->isOwner(Auth::id())) {
+            if(empty($this->getHours())) $this->setHours(0);
+            if(empty($this->getHoursReal())) $this->setHoursReal(0);
 
-		$this->value      = $this->getQuotedValue();
-		$this->value_real = $this->getRealValue();
+            $this->value      = $this->getQuotedValue();
+            $this->value_real = $this->getRealValue();
 
-		return parent::save($options);
+            return parent::save($options);
+        }
+		else {
+	        return $this->getTaskUser()->save($options);
+        }
 	}
 
 
@@ -83,31 +169,73 @@ class Task extends Model
 		return route('tasks.show', ['task_id' => $this->id]);
 	}
 
+
+    public function getStatusId()
+    {
+        if($this->isOwner(Auth::id())) {
+            return $this->status_id;
+        }
+        else {
+            return $this->getTaskUser()->getStatusId();
+        }
+    }
+
+    public function setStatusId($value)
+    {
+        if($this->isOwner(Auth::id())) {
+            $this->status_id = $value;
+            parent::setAttribute("status_id", $value);
+        }
+        else {
+            $this->getTaskUser()->setStatusId($value);
+        }
+    }
+
 	/**
+     * The price depends by the user who it's related to
+     *
 	 * If the price is zero it will be set from the base_price taken
 	 * from the first project's customer
 	 */
 	public function getPrice()
 	{
-		if($this->price > 0) {
-			return $this->price;
-		}
+        if($this->isOwner(Auth::id())) {
+            if ($this->price > 0) {
+                return $this->price;
+            }
 
-		//get the customer
-		$customers = $this->project->customers;
-		if(!empty($customers)) {
-			$base_price = 0;
-			foreach($customers as $customer)
-			{
-				if(!empty($customer->base_price)) {
-					$base_price = $customer->base_price;
-					break;
-				}
-			}
+            //get the customer
+            $customers = $this->project->customers;
+            if (!empty($customers)) {
+                $base_price = 0;
+                foreach ($customers as $customer) {
+                    if (!empty($customer->base_price)) {
+                        $base_price = $customer->base_price;
+                        break;
+                    }
+                }
 
-			return $base_price;
-		}
+                return $base_price;
+            }
+        }
+        else {
+            return $this->getTaskUser()->getPrice();
+        }
 	}
+
+    /**
+     * Set the price of this task for logged user
+     */
+	public function setPrice($value)
+    {
+        if($this->isOwner(Auth::id())) {
+            $this->price = $value;
+            parent::setAttribute("price", $value);
+        }
+        else {
+            $this->getTaskUser()->setPrice($value);
+        }
+    }
 
 
 	/**
@@ -115,10 +243,16 @@ class Task extends Model
 	 */
 	public function getQuotedValue()
 	{
-		$price = $this->getPrice();
-		$hours = ($this->hours > 0) ? $this->hours : 0;
-		$this->value = number_format($price * $hours, 2);
-		return $this->value;
+	    if($this->isOwner(Auth::id())) {
+            $price = $this->getPrice();
+            $hours = ($this->getHours() > 0) ? $this->getHours() : 0;
+            $this->value = number_format($price * $hours, 2);
+            return $this->value;
+        }
+	    else {
+	        return $this->getTaskUser()->getQuotedValue();
+        }
+
 	}
 
 	/**
@@ -126,10 +260,15 @@ class Task extends Model
 	 */
 	public function getRealValue()
 	{
-		$price = $this->getPrice();
-		$hours = ($this->hours_real > 0) ? $this->hours_real : 0;
-		$this->value_real = number_format($price * $hours, 2);
-		return $this->value;
+	    if($this->isOwner(Auth::id())) {
+            $price = $this->getPrice();
+            $hours = ($this->getHoursReal() > 0) ? $this->getHoursReal() : 0;
+            $this->value_real = number_format($price * $hours, 2);
+            return $this->value_real;
+        }
+        else {
+	        return $this->getTaskUser()->getRealValue();
+        }
 	}
 
 
@@ -158,8 +297,6 @@ class Task extends Model
 
 
 
-
-
     /**
 	 * Permission to add an user to this task
 	 *
@@ -169,9 +306,9 @@ class Task extends Model
 	 */
 	public function userCanAddUser(User $user)
 	{
-		//Return true if is the owner
-		if($this->user_id == $user->id) return true;
-		return false;
+		return true;
+		//if($this->user_id == $user->id) return true;
+		//return false;
 	}
 
 	/**
@@ -191,4 +328,68 @@ class Task extends Model
 
 
 
+	public function getHours()
+    {
+        if($this->isOwner(Auth::id()))
+        {
+            return (int) $this->hours;
+        }
+        else {
+            return $this->getTaskUser()->getHours();
+        }
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function setHours($value)
+    {
+        if($this->isOwner(Auth::id()))
+        {
+            $this->hours = $value;
+            parent::setAttribute("hours", $value);
+        }
+        else {
+            return $this->getTaskUser()->setHours($value);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHoursReal()
+    {
+        if($this->isOwner(Auth::id()))
+        {
+            return (int) $this->hours_real;
+        }
+        else {
+            return $this->getTaskUser()->getHoursReal();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setHoursReal($value)
+    {
+        if($this->isOwner(Auth::id()))
+        {
+            $this->hours_real = $value;
+            parent::setAttribute("hours_real", $value);
+        }
+        else {
+            return $this->getTaskUser()->setHoursReal($value);
+        }
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function getValue()
+    {
+        return $this->getRealValue();
+    }
 }

@@ -8,6 +8,7 @@ use App\Mail\TaskStatusChanged;
 use App\Project;
 use App\Role;
 use App\Task;
+use App\TaskDescription;
 use App\TaskStatus;
 use App\TaskUser;
 use App\User;
@@ -50,7 +51,7 @@ class TasksController extends Controller
         }
 
         //Get whole project workers
-        $related_users = $task->getUsersFromParentObjects();
+        $related_users = $task->workers();
         foreach($related_users as $user)
         {
             if(!empty($user->email)) {
@@ -126,6 +127,7 @@ class TasksController extends Controller
 	    $task_statuses = TaskStatus::all();
 	    $task = new Task();
         $task->project_id = $project->id;
+        $task->user_id = Auth::id();
 
     	return view("tasks.form", ['task' => $task, 'task_statuses' => $task_statuses]);
     }
@@ -184,6 +186,9 @@ class TasksController extends Controller
 		    }
 
 			if($task->save()) {
+
+		        //Store description after task updated
+                $this->saveDescription($task, $request->post("description"));
 
                 //Send mail to users
                 $this->sendMails($task, __("New task created"));
@@ -256,46 +261,30 @@ class TasksController extends Controller
 	    $task = Task::find($task->id);
 
 	    //Check permissions
-	    $project = $task->project;
-	    if(false) $project = new Project();
-	    if(!$project->userCanView(Auth::user())) {
+	    if(!$task->userCanView(Auth::user())) {
 		    $this->accessDenied();
 	    }
 
 	    if($task &&
 		    $validatedData) {
+	        if(false) $task = new Task();
 		    $task->fill($request->all());
 
 		    if(empty($task->user_id)) {
 			    $task->user_id = Auth::user()->id;
 		    }
 
-
-		    /*
-		     * The price could be set by the super admin
-		     */
-		    if(Auth::user()->role_id != Role::SUPER_ADMIN) {
-			    $task->price = $task->getPrice();
-		    }
-		    else {
-			    //Convert money
-			    $task_price = $task->price;
-			    $price = new Money($task_price, Currency::EUR(), true);
-
-			    $price_str = str_replace(",",".",$price->formatSimple());
-			    $task->price = $price_str;
-		    }
-
-
-
 		    if($task->save()) {
+
+                //Store description after task updated
+                $this->saveDescription($task, $request->post("description"));
 
 			    if($request->post("send_email") > 0) {
 				    //Send mail to users
                     $this->sendMails($task, __("Task updated"));
 			    }
 
-			    return redirect()->route('projects.show', ['project_id' => $task->project_id])
+			    return redirect()->route('tasks.show', ['task_id' => $task->id])
 			                     ->with(array(
 					                        'success' => 'Task created successfully',
 					                        'selected_status'  => $task->status_id
@@ -304,6 +293,21 @@ class TasksController extends Controller
 	    }
 
 	    return back()->withInput()->withErrors('Errors saving task');
+    }
+
+
+
+    protected function saveDescription(Task $task, $description)
+    {
+        //Store description after task updated
+        $taskDescription = $task->description;
+        if(empty($taskDescription)) {
+            $taskDescription = new TaskDescription();
+        }
+        $taskDescription->description = $description;
+        $taskDescription->task_id = $task->id;
+        $taskDescription->save();
+        return true;
     }
 
 
@@ -364,7 +368,7 @@ class TasksController extends Controller
 
 		//Check if the user is the owner
 		if($user->id == $task->user_id) {
-			return back()->withInput()->withErrors("You are the owner of this task, what else?");
+			return back()->withInput()->withErrors("User email $user_email is already working on this task");
 		}
 
 		//Check if this user is already assigned
@@ -375,6 +379,7 @@ class TasksController extends Controller
 
 		//All good, insert ...
 		$task_user = new TaskUser();
+		$task_user->owner_id = Auth::id();
 		$task_user->task_id = $task->id;
 		$task_user->user_id = $user->id;
 		$task_user->saveOrFail();

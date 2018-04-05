@@ -3,7 +3,7 @@ div.sticky {
     padding:0;
     font-family:arial,sans-serif;
     font-size:100%;
-    /*margin:3em;*/
+    /*margin:0 !important;*/
     /*background:#666;*/
     /*color:#fff;*/
 }
@@ -110,4 +110,10 @@ ol.sticky li{
 }
 ol.sticky li a{
     color:#fff;
+}
+
+@media (max-width: 420px) {
+    ul.sticky {
+        padding: 0 !important;
+    }
 }

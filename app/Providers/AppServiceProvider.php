@@ -21,15 +21,12 @@ class AppServiceProvider extends ServiceProvider
      */
 	public function boot(Dispatcher $events)
 	{
-		$events->listen(BuildingMenu::class, function (BuildingMenu $event) {
+
+        $events->listen(BuildingMenu::class, function (BuildingMenu $event) {
 			$event->menu->menu = array();
-			$event->menu->add('MAIN NAVIGATION');
+			$event->menu->add('MAIN MENU');
 
-			if(Auth::user()->role_id == Role::SUPER_ADMIN) {
-				$event->menu->add(['icon' => 'users', 'text' => 'Users', 'url' => route('users.index'),]);
-			}
-
-            $assigned_tasks = Auth::user()->assigned_tasks(TaskStatus::getActiveIds(), true);
+			$assigned_tasks = Auth::user()->assigned_tasks(TaskStatus::getActiveIds(), true);
 			$assigned_tasks_totals = 0;
 			if($assigned_tasks) {
 			    foreach($assigned_tasks as $assigned_task)
@@ -38,12 +35,21 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
-			$event->menu->add(
-				[
+            //Profile menu
+            $event->menu->add(['avatar' => Auth::user()->avatar() , 'text' => Auth::user()->fullName(), 'url' => route('profile.show'),]);
+
+            if(Auth::user()->role_id == Role::SUPER_ADMIN) {
+                $event->menu->add(['icon' => 'users', 'text' => 'Users', 'url' => route('users.index'),]);
+            }
+
+            $event->menu->add(['icon' => 'users', 'text' => 'My customers', 'url' => route('customers.index'),]);
+
+            $event->menu->add(
+				/*[
 					'icon'  => 'building-o',
 					'text'  => 'My companies',
 					'url'   => route('companies.index'),
-				],
+				],*/
                 [
                     'icon'  => 'briefcase',
                     'text'  => 'My projects',
@@ -58,16 +64,7 @@ class AppServiceProvider extends ServiceProvider
                 ]
 			);
 
-			if(Auth::user()->role_id != Role::CUSTOMER) {
-				$event->menu->add(['icon' => 'users', 'text' => 'My customers', 'url' => route('customers.index'),]);
-			}
 
-
-/*
-			                            <li><a href="{{ route('tasks.index') }}"><i class="fa fa-tasks"></i> All tasks</a></li>
-                                        <li><a href="{{ route('users.index') }}"><i class="fa fa-user-o"></i> All users</a></li>
-                                        <li><a href="{{ route('roles.index') }}"><i class="fa fa-key"></i> All roles</a></li>
-*/
 		});
 	}
 

@@ -246,17 +246,15 @@ class CustomersController extends Controller
 	 * Create the account to let the customer login on backend
 	 *
 	 * @param int $customer_id
+     *
+     * @todo
 	 */
     public function createAccount($customer_id, Request $request)
     {
     	//Load customer
     	$customer = Customer::find($customer_id);
 
-    	//Load the user owner
-	    $user = $customer->user;
-	    //dd($user);
-
-		//Verify if customer has already a login account with his email
+    	//Verify if customer has already a login account with his email
     	$account = $customer->account;
 		if(empty($account->id)) {
 			dd($customer);

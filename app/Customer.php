@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
 class Customer extends Authenticable
 {
@@ -83,26 +84,22 @@ class Customer extends Authenticable
 	}
 
 	/**
-	 * Update task values if:
+	 * Update user's tasks values if:
 	 * - the task is related to a project with this customer
 	 * - the customer is the first (or the only one) in the project
 	 * - the task price is empty
 	 */
 	public function updateTaskPricesAndValues()
 	{
-		$projects = $this->projects;
-		foreach($projects as $project)
-		{
-			$tasks = $project->tasks;
-			if(empty($tasks)) continue;
-
-			foreach($tasks as $task)
-			{
-				if($task->price > 0) continue;
-				$task->price = $this->base_price;
-				$task->save();
-			}
-		}
+	    $tasks = Auth::user()->assigned_tasks();
+        foreach($tasks as $task)
+        {
+            if(false) $task = new Task();
+            $price = $task->getPrice();
+            if($price > 0) continue;
+            $task->setPrice($this->base_price);
+            $task->save();
+  		}
 
 	}
 

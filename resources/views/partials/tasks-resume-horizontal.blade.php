@@ -11,7 +11,7 @@
                         <thead>
                         <tr>
                             <?php
-	                        $tot_hours = array("hours" => 0,
+                            $tot_hours = array("hours" => 0,
                                                "hours_real" => 0,
                                                "value" => 0);
 							?>
@@ -53,7 +53,7 @@
 
                                 <div class="info-box-content">
                                     <span class="info-box-text">Current value</span>
-                                    <span class="info-box-number"><b><?=money($project->value)?></b></span>
+                                    <span class="info-box-number"><b><?=money($project->getProjectValue(Auth()->user()))?></b></span>
                                 </div>
                                 <!-- /.info-box-content -->
                             </div>

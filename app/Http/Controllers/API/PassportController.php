@@ -27,9 +27,11 @@ class PassportController extends Controller
             ]
         ))
         {
+
             $user = Auth::user();
             if(false) $user = new User();
             $res['token'] = $user->createToken(env("APP_NAME"))->accessToken;
+
             $res['user'] = $user;
 
             return response()->json([

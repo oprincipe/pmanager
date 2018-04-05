@@ -63,9 +63,9 @@
 
                         <li>
                             @if(config('adminlte.logout_method') == 'GET' || !config('adminlte.logout_method') && version_compare(\Illuminate\Foundation\Application::VERSION, '5.3.0', '<'))
-                                <a href="{{ url(config('adminlte.logout_url', 'auth/logout')) }}">
-                                    <i class="fa fa-fw fa-power-off"></i> {{ trans('adminlte::adminlte.log_out') }}
-                                </a>
+                                {{ Form::open(array('url' => '/logout')) }}
+                                {{ Form::submit(trans('adminlte::adminlte.log_out'), ['class' => 'btn btn-default btn-flat']) }}
+                                {{ Form::close() }}
                             @else
                                 <a href="#"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
@@ -140,4 +140,6 @@
     @stack('js')
     <script src="{{ asset('js/globals.js') }}"></script>
     @yield('js')
+    @yield('add_script')
 @stop
+

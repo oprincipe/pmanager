@@ -26,11 +26,17 @@ Route::group(['middleware' => 'auth:api'], function(){
      * Projects
      */
     Route::post('projectsList', 'API\ProjectsController@index');
+    Route::post('project/{id?}', 'API\ProjectsController@show');
+
+    /**
+     * Tasks
+     */
+    Route::post('tasksList/{id}', 'API\TasksController@project_tasks');
+
+
+    /**
+     * Comments
+     */
+    Route::post('comments/{commentable_type}/{commentable_id}', 'API\CommentsController@getComments');
 
 });
-
-/*
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-*/

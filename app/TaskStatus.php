@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TaskStatus extends Model
 {
+
 	const STATUS_STAND_BY = 1;
 	const STATUS_WAITING = 2;
 	const STATUS_WORKING = 3;

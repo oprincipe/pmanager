@@ -35,8 +35,13 @@ Route::middleware(['auth'])->group(function() {
 	Route::resource('tasks', 'TasksController');
 	Route::resource('users', 'UsersController');
 	Route::resource('reports', 'ReportsController');
-	Route::resource('customers', 'CustomersController');
+    Route::resource('customers', 'CustomersController');
 
+    //Profile controller
+    Route::get("profile", "ProfileController@show");
+    Route::get("profile/show", "ProfileController@show")->name("profile.show");
+    Route::get("profile/edit", "ProfileController@edit")->name("profile.edit");
+    Route::post("profile/update", "ProfileController@update")->name("profile.update");
 
 	Route::get('projects/create/{id?}', 'ProjectsController@create');
 	Route::post('projects/get_tasks', 'ProjectsController@ajax_getProjectTasks')->name("projects.get_tasks_by_status");

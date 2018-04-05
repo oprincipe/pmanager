@@ -9,15 +9,10 @@
 namespace App;
 
 
+use Illuminate\Support\Facades\Auth;
+
 trait UserRelations
 {
-
-    /**
-     * List all users from object related to this
-     *
-     * @return array
-     */
-    public abstract function getUsersFromParentObjects();
 
     /**
      * A project belongs to:
@@ -30,13 +25,26 @@ trait UserRelations
 
 
     /**
-     * Return the list of Users related to ProjectUsers
+     * Return the list of Users related to Object
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function users()
     {
         return $this->belongsToMany("App\User");
+    }
+
+
+    /**
+     * Return the list of Users related to Object
+     * referring to owner_id
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function workers()
+    {
+        return $this->belongsToMany("App\User")
+            ->where("owner_id", Auth::id());
     }
 
 
@@ -55,7 +63,7 @@ trait UserRelations
      */
     public function isOwner(int $user_id)
     {
-        return $this->user_id === $user_id;
+        return (int) $this->user_id === (int) $user_id;
     }
 
 

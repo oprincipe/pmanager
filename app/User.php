@@ -5,12 +5,18 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\HasApiTokens;
+use function asset;
+use function base64_encode;
+use function md5;
 
 class User extends Authenticatable
 {
     use Notifiable;
     use HasApiTokens;
+
+    const AVATAR_FOLDER = "avatars";
 
     /**
      * The attributes that are mass assignable.
@@ -39,12 +45,22 @@ class User extends Authenticatable
 
     public function fullName()
     {
-    	return $this->first_name." ".$this->last_name;
+    	$fullName = trim($this->first_name." ".$this->last_name);
+    	return (empty($fullName)) ? $this->email : $fullName;
     }
 
     public function __toString()
     {
 	    return $this->fullName();
+    }
+
+
+    public function avatar()
+    {
+        if(Storage::exists(self::AVATAR_FOLDER."/".md5($this->id).".jpeg")) {
+            return "data:image/jpeg;base64, ".base64_encode(Storage::get(self::AVATAR_FOLDER."/".md5($this->id).".jpeg"));
+        }
+        return asset("images/no-profile.png");
     }
 
 	/*
@@ -86,43 +102,42 @@ class User extends Authenticatable
 
 	public function assigned_projects()
     {
-        return \App\Project::where("user_id", $this->id)
-            ->whereIn("id", function ($query) {
-                $query->select("project_id")
-                    ->from("project_user")
-                    ->where("user_id", $this->id);
-            }, "or");
+        return \App\Project::where("user_id", $this->id);
     }
 
     /**
      * @return \App\Task array
      */
-    public function assigned_tasks(array $task_status_ids = null, $group_by = false)
+    public function assigned_tasks(array $task_status_ids = null, $group_by = false, $project_id = 0)
     {
         if(empty($task_status_ids)) {
             //$where_ids = " (".implode(",", $task_status_ids).") ";
-            $task_status_ids = TaskStatus::getIds();
+            $task_status_ids = [1];// TaskStatus::getIds();
         }
 
         if($group_by) {
-            return \App\Task::where("user_id", $this->id)
+            return \App\Task::where("project_id", ($project_id > 0) ? "=" : ">", $project_id)
                 ->where(function($query) use ($task_status_ids) {
-                    $query->whereIn("status_id", $task_status_ids)
-                        ->whereIn("id", function ($query) {
-                            $query->select("project_id")
+
+                    $query->where("user_id", $this->id);
+                    $query->whereIn("status_id", $task_status_ids);
+                    $query->whereIn("id", function ($query) {
+                            $query->select("task_id")
                                 ->from("task_user")
                                 ->where("user_id", $this->id);
                         }, "or");
+
                 })
                 ->groupBy("status_id")
                 ->get(['*', DB::raw('count(tasks.id) as totals')]);
         }
         else {
-            return \App\Task::where("user_id", $this->id)
+            return \App\Task::where("project_id", ($project_id > 0) ? "=" : ">", $project_id)
                 ->where(function($query) use ($task_status_ids) {
-                    $query->whereIn("status_id", $task_status_ids)
-                        ->whereIn("id", function ($query) {
-                            $query->select("project_id")
+                    $query->where("user_id", $this->id);
+                    $query->whereIn("status_id", $task_status_ids);
+                    $query->whereIn("id", function ($query) {
+                            $query->select("task_id")
                                 ->from("task_user")
                                 ->where("user_id", $this->id);
                         }, "or");
@@ -130,7 +145,6 @@ class User extends Authenticatable
 
         }
     }
-
 
 
 	public function comments()

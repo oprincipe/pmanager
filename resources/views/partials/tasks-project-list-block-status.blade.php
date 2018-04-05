@@ -19,13 +19,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($project->tasks($task_status->id) as $task)
+                @foreach($tasks as $task)
                     <tr draggable="true" class="tag_row"
                         id="task_id_{{ $task->id }}"
                         data-content="task_status_{{ $task_status->id }}"
                     >
                         <td>
-                            <i class="fa fa-clipboard" title="Drag task to another state"></i>
+                            @if($task->isOwner(Auth::id()))
+                                <i class="fa fa-clipboard" title="Drag task to another state"></i>
+                            @endif
                         </td>
                         <td>
                             <label title="{{ $task->status->name }}">{!! $task->status->icon() !!}</label>
@@ -59,17 +61,12 @@
                         </td>
                         <td>
                             <b>{!! $task->name !!}</b>
-                            {{--
-                            @if(!empty($task->description))
-                                <p><i>{!! \Illuminate\Support\Str::words($task->description, 10, '...') !!}</i></p>
-                            @endif
-                            --}}
                         </td>
                         <td>
-                            {{ $task->hours }}
+                            {{ $task->getHours() }}
                         </td>
                         <td>
-                            {{ 1*$task->hours_real }}
+                            {{ 1*$task->getHoursReal() }}
                         </td>
                         <td class="text-nowrap">
                             {{ money($task->getPrice()) }}

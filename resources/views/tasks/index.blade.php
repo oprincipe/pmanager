@@ -4,6 +4,31 @@
     <h1>Tasks List</h1>
 @endsection
 
+
+@section("add_script")
+
+    <script>
+
+            $(".progress-bar").each(function() {
+
+                var _value = $(this).attr("aria-valuenow");
+                var _add_class = "";
+                if(_value > 10 && _value <= 50) {
+                    _add_class = "progress-bar-info";
+                }
+                else if(_value > 50 && _value <= 99) {
+                    _add_class = "progress-bar-warning";
+                }
+                else if(_value >= 100) {
+                    _add_class = "progress-bar-success";
+                }
+                $(this).addClass(_add_class);
+            });
+
+    </script>
+
+@endsection
+
 @section('content')
 
     <div class="row">
@@ -21,7 +46,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="panel-body">
+                <td class="panel-body">
 
                     <table class="table table-hover">
                         <thead>
@@ -72,8 +97,6 @@
                                 </td>
                                 <td style="white-space: normal">
                                     <b>{{ $task->name }}</b>
-                                    <br />
-                                    <em>{{ __("Project") }}: {{ $task->project->name }}</em>
                                 </td>
                                 <td>
                                     {{ $task->hours }}
@@ -94,6 +117,53 @@
                                     {{ $task->updated_at->format('d/m/Y H:i:s') }}
                                 </td>
                             </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td>
+                                    @if($task->project->userCanView(Auth::user()))
+                                    <em>{{ __("Project") }}: {{ $task->project->name }}</em>
+                                    @endif
+
+                                    @if(!$task->isOwner(Auth::id()))
+                                        <span class="pull-left"><em>{{ __("Owner") }}: {{ $task->getTaskUser(Auth::user())->owner() }}</em></span>
+                                    @endif
+
+                                    <span class="pull-right">{{ __("Completition percentage") }}</span>
+                                </td>
+                                <td colspan="6">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar"
+                                             style="width: {{ $task->getCompletitionPercentage() }}%;"
+                                             aria-valuenow="{{ $task->getCompletitionPercentage() }}"
+                                             aria-valuemin="0" aria-valuemax="100"
+                                        >{{ $task->getCompletitionPercentage() }}%</div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            @if(!empty($task->workers->count()))
+                                @foreach($task->workers as $worker)
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>
+                                            <span class="pull-right">{{ $worker }}</span>
+                                        </td>
+                                        <td colspan="6">
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar"
+                                                     style="width: {{ $task->getTaskUser($worker)->getCompletitionPercentage() }}%;"
+                                                     aria-valuenow="{{ $task->getTaskUser($worker)->getCompletitionPercentage() }}"
+                                                     aria-valuemin="0" aria-valuemax="100"
+                                                >{{ $task->getTaskUser($worker)->getCompletitionPercentage() }}%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+
+
+
+
                         @endforeach
                         </tbody>
                     </table>

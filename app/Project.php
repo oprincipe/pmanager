@@ -3,11 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class Project extends Model
+class Project extends Model implements Monetizable
 {
-    use UserRelations, UserCanPermissions;
+    use UserRelations, UserCanPermissions, MonetizableTrait;
 
 	protected $fillable = array(
 		'name',
@@ -18,10 +19,76 @@ class Project extends Model
 	);
 
 
-	public function getUsersFromParentObjects()
+    public function getMoneyFields()
     {
-        return [];
+        return [
+            'hours' => 'setHours',
+        ];
     }
+
+
+    /**
+     * No users relations. Everything is related to tasks
+     *
+     * @return array
+     */
+    public function users()
+    {
+        return null;
+    }
+
+    /**
+     * No users relations. Everything is related to tasks
+     *
+     * @return array
+     */
+    public function workers()
+    {
+        return null;
+    }
+
+
+    public function isMoneyField($fieldName)
+    {
+        return array_key_exists($fieldName, $this->getMoneyFields());
+    }
+
+
+    public function getPrice()
+    {
+        return 0;
+    }
+
+    public function setPrice($value)
+    {
+        return true;
+    }
+
+    public function getHours()
+    {
+        return $this->hours;
+    }
+
+    public function setHours($value)
+    {
+        $this->hours = $value;
+    }
+
+    public function getHoursReal()
+    {
+        return $this->getHours();
+    }
+
+    public function setHoursReal($value)
+    {
+        return $this->setHours($value);
+    }
+
+    public function getValue()
+    {
+        return $this->value;
+    }
+
 
 
     public function save(array $options = [])
@@ -38,8 +105,6 @@ class Project extends Model
 
 	public function userCanAddUser(User $user)
 	{
-		//Return true if is the owner
-		if($this->user_id == $user->id) return true;
 		return false;
 	}
 
@@ -53,25 +118,28 @@ class Project extends Model
 	 */
 	public function userCanDelUser(User $user)
 	{
-		//Return true if is the owner
-		if($this->user_id == $user->id) return true;
 		return false;
 	}
 
 
+
+
 	/**
-	 * Count how many task are on project
-	 *
+	 * Return all project tasks
+     *
 	 * @param int|null $status_id
 	 *
 	 * @return mixed
 	 */
 	public function tasks($status_id = null)
 	{
-		if(!empty($status_id)) {
-			return $this->hasMany('App\Task')->where(['status_id' => $status_id])->get();
+	    if(!empty($status_id)) {
+			return $this->hasMany('App\Task')
+                ->where(['status_id' => $status_id])
+                ->get();
 		}
-		return $this->hasMany('App\Task');
+		return $this->hasMany('App\Task')
+            ->get();
 	}
 
 	/**
@@ -91,24 +159,58 @@ class Project extends Model
 		return $res;
 	}
 
+
+	/**
+     * The value of the project depends by the user
+     *
+     */
+	public function getProjectValue()
+    {
+        return $this->value;
+    }
+
+
+
+    /*
+	 * Update the project value depending of own tasks
+	 * and logged user
+	 */
+    public function updateHoursAndValue()
+    {
+        $sql = "UPDATE projects p 
+            SET p.`hours` = (SELECT IFNULL(SUM(t.`hours_real`),0) 
+            FROM tasks t WHERE t.`project_id` = p.`id`)
+            WHERE p.id = ".$this->id;
+        DB::connection()->getPdo()->exec($sql);
+
+        $sql = "UPDATE projects p 
+            SET p.`value` = (SELECT IFNULL(SUM(t.`value_real`),0) 
+            FROM tasks t WHERE t.`project_id` = p.`id`)
+            WHERE p.id = ".$this->id;
+        DB::connection()->getPdo()->exec($sql);
+    }
+
+
+
 	/**
 	 * Count hours took for every status id
 	 */
 	public function get_task_hours_resume()
 	{
-		$sql = "SELECT
-				t.`status_id`,
-				t2.`name`,
-				    SUM(t.`hours`) AS `tot_hours`,
-				    SUM(t.`hours_real`) AS `tot_hours_real`,
-				    SUM(t.value) AS `tot_values`
-				FROM
-				    `tasks` t
-				INNER JOIN task_statuses t2 ON t.status_id = t2.id
-				WHERE
-				t.`project_id` = ".$this->id."
-				GROUP BY t.`status_id`, t2.name";
-		$rs = DB::select($sql);
+        $sql = "SELECT
+            t.`status_id`,
+            t2.`name`,
+                SUM(t.`hours`) AS `tot_hours`,
+                SUM(t.`hours_real`) AS `tot_hours_real`,
+                SUM(t.value) AS `tot_values`
+            FROM
+                `tasks` t
+            INNER JOIN task_statuses t2 ON t.status_id = t2.id
+            WHERE
+            t.`project_id` = ".$this->id."
+            GROUP BY t.`status_id`, t2.name";
+
+        $rs = DB::select($sql);
 		return $rs;
 	}
 
@@ -119,8 +221,9 @@ class Project extends Model
 	 */
 	public function customers()
 	{
-		return $this->belongsToMany("App\Customer", "customer_projects");
-	}
+		return $this->belongsToMany("App\Customer", "customer_projects")
+                          ->where("user_id", Auth::id());
+    }
 
 
 	public function comments()
@@ -143,15 +246,7 @@ class Project extends Model
 	}
 
 
-	public function updateHoursAndValue()
-	{
-		$sql = "UPDATE projects p SET p.`hours` = (SELECT IFNULL(SUM(t.`hours_real`),0) FROM tasks t WHERE t.`project_id` = p.`id`)
-				WHERE p.id = ".$this->id;
-		DB::connection()->getPdo()->exec($sql);
-		$sql = "UPDATE projects p SET p.`value` = (SELECT IFNULL(SUM(t.`value_real`),0) FROM tasks t WHERE t.`project_id` = p.`id`)
-				WHERE p.id = ".$this->id;
-		DB::connection()->getPdo()->exec($sql);
-	}
+
 
 	public function getViewRoute()
 	{

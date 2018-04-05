@@ -16,7 +16,16 @@
         <a href="{{ $item['href'] }}"
            @if (isset($item['target'])) target="{{ $item['target'] }}" @endif
         >
-            <i class="fa fa-fw fa-{{ $item['icon'] or 'circle-o' }} {{ isset($item['icon_color']) ? 'text-' . $item['icon_color'] : '' }}"></i>
+            @if(isset($item['avatar']))
+                <span class="profile-header-container">
+                    <span class="profile-menu-img">
+                        <img class="img-circle" src="{{ $item['avatar'] }}" style="max-width: 40px" />
+                    </span>
+                </span>
+            @else
+                <i class="fa fa-fw fa-{{ $item['icon'] or 'circle-o' }} {{ isset($item['icon_color']) ? 'text-' . $item['icon_color'] : '' }}"></i>
+            @endif
+
             <span>
                 {{ $item['text'] }}
                 @if(!empty($item['badge']))

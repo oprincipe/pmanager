@@ -7,6 +7,7 @@
 @section('css')
     <link href="{{ asset('css/sticky_notes.css') }}" type="text/css" rel="stylesheet">
     <link  href="http://fonts.googleapis.com/css?family=Reenie+Beanie:regular" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/common.css') }}" type="text/css" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -29,7 +30,7 @@
                                 <a href="{{ route("projects.show",$project->id) }}">
                                     <h2>{{ $project->name }}</h2>
                                     <p>
-                                        {{ money($project->value) }}
+                                        {{ money($project->getValue()) }}
                                     </p>
                                     <p>
                                         Customers:
@@ -63,3 +64,5 @@
 
 
 @endsection
+
+

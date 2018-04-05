@@ -27,7 +27,12 @@ trait UserCanPermissions
          * Return true if the user is inside the users
          * list
          */
-        $worker = $this->users()->where("user_id", $user->id)->first();
+        $worker = $this->users();
+        if(!$worker) {
+            return false;
+        }
+
+        $worker = $worker->where("user_id", $user->id)->first();
         if($worker) {
             return true;
         }

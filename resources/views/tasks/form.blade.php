@@ -1,7 +1,7 @@
 @extends("layouts.app")
 
 @section('content_header')
-    <h1>{{ $task->project->name }}</h1>
+
 @endsection
 
 @section('content')
@@ -25,6 +25,7 @@
                             @else
                                 Task: {{ $task->name }}
                                     <input type="hidden" name="_method" value="put" />
+                                <span class="pull-right">Owner: {{ $task->owner()->fullName() }}</span>
                             @endif
                         </div>
                     </div>
@@ -43,30 +44,24 @@
                                                     class="required">*</span></label>
                                         <input type="text" class="form-control" name="name" id="task-name"
                                                placeholder="task name"
-                                               required spellcheck="false" value="{{ $task->name }}"
+                                               required spellcheck="false" value="{{ old("name", $task->name) }}"
                                         />
                                     </div>
                                 </div>
                                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                     <label for="task-status-id"><i class="fa fa-info"></i> Status <span
                                                 class="required">*</span></label>
-                                    @if (Auth::user()->role_id == 1)
-                                        <div class="form-group">
-                                            <select class="form-control" name="status_id" id="task-status-id">
-                                                @foreach($task_statuses as $task_status)
-                                                    <option value="{{ $task_status->id }}"
-                                                            @if($task_status->id == $task->status_id)
-                                                            selected="selected"
-                                                            @endif
-                                                    >{{ $task_status->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    @else
-                                        <input type="hidden" name="status_id" id="task-status-id"
-                                               value="{{ (empty($task->id)) ? 1 : $task->status_id }}" />
-                                        {{ empty($task->id) ? App\TaskStatus::find(1)->name : $task->status->name }}
-                                    @endif
+                                    <div class="form-group">
+                                        <select class="form-control" name="status_id" id="task-status-id">
+                                            @foreach($task_statuses as $task_status)
+                                                <option value="{{ $task_status->id }}"
+                                                        @if($task_status->id == $task->getStatusId())
+                                                        selected="selected"
+                                                        @endif
+                                                >{{ $task_status->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
 
 
@@ -90,7 +85,7 @@
                                               rows="5"
                                               spellcheck="false"
                                               style="resize: vertical"
-                                    >{!! $task->description !!}</textarea>
+                                    >{!! old("description", $task->description) !!}</textarea>
                                     <script>
                                         CKEDITOR.replace('task-description');
                                     </script>
@@ -120,14 +115,14 @@
                     <div class="panel-body">
                         <ol class="list-unstyled">
                             @if(!empty($task->id))
-                                <li><a href="{{ route('tasks.show', $task->id) }}"><i class="fa fa-tasks"></i> View task</a>
+                                <li><a href="{{ route('tasks.show', $task->id) }}"><i class="fa fa-tasks"></i> {{ __("View task") }}</a>
                                 </li>
                             @endif
+                            @if ($task->project->userCanView(Auth::user()))
                             <li><a href="{{ URL::to('/projects/'.$task->project_id) }}"><i class="fa fa-briefcase"></i>
-                                    View
-                                    project</a>
+                                    {{ __("View project") }}</a>
                             </li>
-                            <li><a href="{{ URL::to('/companies/') }}"><i class="fa fa-list"></i> All companies</a></li>
+                            @endif
                         </ol>
                     </div>
                 </div>
@@ -142,41 +137,29 @@
                     <div class="panel-body">
 
                         <div class="form-group">
-                            <label for="task-hours"><i class="fa fa-clock-o"></i> Expected hours <span
+                            <label for="task-hours"><i class="fa fa-clock-o"></i> {{ __("Quoted hours") }}<span
                                         class="required">*</span></label>
                             <input type="number" class="form-control" name="hours" id="task-hours"
                                    placeholder="Quote hours to complete"
                                    required
-                                   spellcheck="false" value="{{ $task->hours }}"
+                                   spellcheck="false" value="{{ $task->getHours() }}"
                             />
                         </div>
 
                         <div class="form-group">
-                            @if(Auth()->user()->role_id !== \App\Role::SUPER_ADMIN)
-                                <label for="task-hours-real"><i class="fa fa-clock-o"></i> Real worked hours <span
-                                            class="required">*</span></label>
-                                <span class="pull-right">{{ (int) $task->hours_real }}</span>
-                            @else
-                                <label for="task-hours-real"><i class="fa fa-clock-o"></i> Real worked hours </label>
-                                <input type="number" class="form-control" name="hours_real" id="task-hours-reals"
-                                       placeholder="How many hours you real take to complete this task"
-                                       spellcheck="false" value="{{ 1*$task->hours_real }}"
-                                />
-                            @endif
+                            <label for="task-hours-real"><i class="fa fa-clock-o"></i> {{ __("Worked hours") }} </label>
+                            <input type="number" class="form-control" name="hours_real" id="task-hours-reals"
+                                   placeholder="How many hours you real take to complete this task"
+                                   spellcheck="false" value="{{ $task->getHoursReal() }}"
+                            />
                         </div>
 
                         <div class="form-group">
-                            @if(Auth()->user()->role_id !== \App\Role::SUPER_ADMIN)
-                                <label for="task-price"><i class="fa fa-clock-o"></i> Price per hours <span
-                                            class="required">*</span></label>
-                                <span class="pull-right">{{ money($task->getPrice(), "EUR") }}</span>
-                            @else
-                                <label for="task-price"><i class="fa fa-euro"></i>/<i class="fa fa-clock-o"></i> Price per hours </label>
-                                <input type="text" class="form-control" name="price" id="task-price"
-                                       placeholder="Price per hours"
-                                       spellcheck="false" value="{{ money($task->getPrice(), "EUR") }}"
-                                />
-                            @endif
+                            <label for="task-price"><i class="fa fa-euro"></i>/<i class="fa fa-clock-o"></i> {{ __("Price per hours") }}</label>
+                            <input type="text" class="form-control" name="price" id="task-price"
+                                   placeholder="Price per hours"
+                                   spellcheck="false" value="{{ money($task->getPrice(), "EUR") }}"
+                            />
                         </div>
 
 
